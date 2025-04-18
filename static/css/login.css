@@ -1,0 +1,197 @@
+/* login.css */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background: url("/img/bg3.png") no-repeat center center/cover; 
+    background-color: #f0fff0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    text-align: center;
+}
+
+.container h2 {
+    color: #008000;
+    margin-bottom: 1rem;
+}
+
+.input-group {
+    position: relative;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    padding-right: 40px;
+    border: 2px solid #008000;
+    border-radius: 5px;
+    outline: none;
+    font-size: 16px;
+}
+
+.input-group i {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background: #008000;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #006600;
+}
+
+.google-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: white;
+    border: 2px solid #008000;
+    color: #008000;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.google-btn:hover {
+    background: #008000;
+    color: white;
+}
+
+.signup-link {
+    margin-top: 10px;
+}
+
+.signup-link a {
+    color: #008000;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.signup-link a:hover {
+    text-decoration: underline;
+}
+
+
+/* Flash messages styling */
+.flash-messages {
+    position: fixed;
+    top: 70px; /* Adjust if your header height changes */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 1000;
+    opacity: 0.9;
+    transition: opacity 0.5s ease;
+  }
+
+  /* Style for the input group container */
+.input-group {
+    margin-bottom: 15px;
+  }
+  
+  /* General styling for text inputs and select dropdown */
+  .input-group input,
+  .input-group select {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: #fff;
+    outline: none;
+    box-sizing: border-box;
+  }
+  
+  /* Additional styling for the dropdown (select element) */
+  .input-group select {
+    /* Remove default arrow for custom styling */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23ccc'><path d='M4 6l4 4 4-4'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+  }
+  
+  /* Optional: Hover and focus effects for the dropdown */
+  .input-group select:hover,
+  .input-group select:focus {
+    border-color: #888;
+  }
+  
+  /* If you want to style the custom dropdown arrow container, you can use this trick with a wrapper */
+  .select-wrapper {
+    position: relative;
+  }
+  
+  .select-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #ccc;
+    transform: translateY(-50%);
+  }
+  
+  /* Hide the default arrow if using a wrapper */
+  .select-wrapper select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  /* CSS for h3 tag styling */
+h3 {
+    font-size: 22px;
+    color: #555;
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+  
+  /* Horizontal separator style */
+  hr.separator {
+    margin: 20px 0;
+    border: none;
+    border-top: 1px solid #ccc;
+  }

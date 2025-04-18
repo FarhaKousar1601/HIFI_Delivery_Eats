@@ -1,0 +1,287 @@
+ /*-------------------------------------------
+  Global & Layout
+-------------------------------------------*/
+:root {
+  --primary-color: #10b981;
+  --primary-dark: #059669;
+  --secondary-color: #333333;
+  --success-color: #10b981;
+  --success-dark: #059669;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --danger-dark: #dc2626;
+  --text-color: #333333;
+  --bg-color: #f0fff0;
+  --card-bg: #ffffff;
+  --shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  --border-color: #e5e7eb;
+  --muted-color: #6b7280;
+}
+
+/* Base Styles */
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+}
+
+
+/* Main content area */
+.main-content {
+  flex: 1;
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+/*-------------------------------------------
+Order Detail Container Styles
+-------------------------------------------*/
+.order-detail-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  background-color: var(--card-bg);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+}
+
+/* Header and Logo */
+.order-detail-container header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-color);
+}
+.order-detail-container .logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.order-detail-container .logo-icon {
+  font-size: 1.8rem;
+  color: var(--primary-color);
+}
+.order-detail-container h1 {
+  font-size: 1.8rem;
+  color: var(--primary-color);
+  margin: 0;
+}
+
+/* Order Status */
+.order-detail-container .order-status {
+  font-size: 1rem;
+}
+.order-detail-container .status-label {
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+.order-detail-container .status-value {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  background-color: var(--warning-color);
+  color: #fff;
+  font-weight: 600;
+}
+.order-detail-container .status-value[data-status="Delivered"] {
+  background-color: var(--success-color);
+}
+.order-detail-container .status-value[data-status="Out for Delivery"] {
+  background-color: #3b82f6;
+}
+.order-detail-container .status-value[data-status="Picked Up"] {
+  background-color: var(--warning-color);
+}
+
+/* Card Styles */
+.order-detail-container .card {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.5rem;
+}
+
+/* Info Grid (Customer & Order Details) */
+.order-detail-container .info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.order-detail-container .info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+.order-detail-container .info-item i {
+  font-size: 1.2rem;
+  color: var(--primary-color);
+}
+
+/* Order Items & Summary */
+.order-detail-container .order-items ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+}
+.order-detail-container .order-items li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 10px;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+.order-detail-container .order-summary {
+  margin-top: 1.5rem;
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+.order-detail-container .summary-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+.order-detail-container .summary-item.total {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--primary-color);
+  border-top: 2px solid var(--border-color);
+  padding-top: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+/* Phone Actions */
+.order-detail-container .phone-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.order-detail-container .phone-actions {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+.order-detail-container .phone-actions .btn {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+  text-decoration: none;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.3s ease;
+}
+.order-detail-container .btn-call {
+  background: var(--success-color);
+  color: #fff;
+}
+.order-detail-container .btn-call:hover {
+  background: var(--success-dark);
+}
+.order-detail-container .btn-text {
+  background: var(--primary-color);
+  color: #fff;
+}
+.order-detail-container .btn-text:hover {
+  background: var(--primary-dark);
+}
+
+/*-------------------------------------------
+Tracking Section
+-------------------------------------------*/
+.order-detail-container .tracking-section {
+  position: relative;
+}
+.order-detail-container .tracking-container {
+  position: relative;
+  padding: 2rem 1rem;
+  margin: 1.5rem 0;
+}
+.order-detail-container .tracking-steps {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+}
+.order-detail-container .tracking-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 25%;
+  position: relative;
+}
+.order-detail-container .step-icon-container {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+.order-detail-container .step-icon-container img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.order-detail-container .step-text {
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+/* Horizontal line & progress bar */
+.order-detail-container .step-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background-color: var(--border-color);
+  z-index: 1;
+}
+.order-detail-container .progress-bar {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 4px;
+  z-index: 2;
+  overflow: hidden;
+}
+.order-detail-container .progress-bar .progress {
+  height: 100%;
+  width: 0%;
+  background-color: var(--primary-color);
+  transition: width 0.4s ease;
+}
+
+/* Tracking Actions */
+.order-detail-container .tracking-actions {
+  text-align: center;
+  margin-top: 1rem;
+}
+.order-detail-container .btn-update-status {
+  padding: 0.6rem 1.2rem;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.order-detail-container .btn-update-status:hover {
+  background-color: var(--primary-dark);
+}

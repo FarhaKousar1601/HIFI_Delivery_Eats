@@ -1,0 +1,60 @@
+{% extends "admin/index.html" %} {% block title %}Insights{% endblock title %}
+{% block css %}
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+/>
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/admin/insights.css') }}"
+/>
+{% endblock css %} {% block content %}
+<aside class="sidebar">
+  <div class="stat-card">
+    <i class="fas fa-truck"></i>
+    <div class="stat-info">
+      <h2>Average Delivery Time</h2>
+      <span class="stat-number">{{ avg_delivery_time }} mins</span>
+    </div>
+  </div>
+  <div class="stat-card">
+    <i class="fas fa-exclamation-triangle"></i>
+    <div class="stat-info">
+      <h2>Delivery Partner Performance</h2>
+      <span class="stat-number">{{ delivery_partner_performance }}%</span>
+    </div>
+  </div>
+  <div class="stat-card">
+    <i class="fas fa-clock"></i>
+    <div class="stat-info">
+      <h2>Return & Refund Statistics</h2>
+      <span class="stat-number">{{ return_refund_percentage }}%</span>
+    </div>
+  </div>
+  <div class="stat-card">
+    <i class="fas fa-shipping-fast"></i>
+    <div class="stat-info">
+      <h2>On-Time Order Percentage</h2>
+      <span class="stat-number">{{ on_time_order_percentage }}%</span>
+    </div>
+  </div>
+  <div class="stat-card">
+    <i class="fas fa-chart-line"></i>
+    <div class="stat-info">
+      <h2>Revenue Per Delivery</h2>
+      <span class="stat-number">₹ {{ revenue_per_delivery }}</span>
+    </div>
+  </div>
+</aside>
+<main class="dashboard-content">
+<h1>Business Insights Dashboard</h1>
+
+<div class="images-container">
+  {% if charts %} {% for chart in charts %}
+  <div class="image-box">{{ chart|safe }}</div>
+  {% endfor %} {% else %}
+  <p>No charts available.</p>
+  {% endif %}
+</div>
+</main>
+{% endblock content %}

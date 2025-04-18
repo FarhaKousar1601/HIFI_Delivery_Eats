@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - HIFI Delivery Eats</title>
+  <!-- Link to your admin-specific CSS file -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/admin.css') }}">
+  {% block css %}
+  {% endblock css %}
+</head>
+<body>
+  <header class="header">
+    <div class="logo">HIFI Delivery Eats</div>
+    <nav class="nav-menu">
+      <a href="{{ url_for('admin') }}" class="{% if request.endpoint == 'admin' %}active{% endif %}">Dashboard</a>
+      <a href="{{url_for('insights') }}" class="{% if request.endpoint == 'orders' %}active{% endif %}">Insights</a>
+      <a href="#" class="{% if request.endpoint == 'users' %}active{% endif %}">Users</a>
+      <a href="{{ url_for('delivery_partner') }}" class="{% if request.endpoint == 'delivery_partner' %}active{% endif %}">Delivery Partner</a>
+      <a href="{{ url_for('employee_logout') }}">Logout</a>
+    </nav>
+  </header>
+
+  <!-- Flash Message Section -->
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div id="flash-message" class="flash-message">
+        <span class="flash-close" onclick="document.getElementById('flash-message').style.display='none';">&times;</span>
+        {% for message in messages %}
+          {{ message }}
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <main>
+    <section class="dashboard-content">
+      {% block content %}
+      <p>This is the admin dashboard. Use the navigation menu to manage different sections.</p>
+      {% endblock content %}
+    </section>
+  </main>
+
+  {% block scripts %}
+  <script>
+    // Automatically hide flash message after 3 seconds
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        var flash = document.getElementById('flash-message');
+        if (flash) {
+          flash.style.display = 'none';
+        }
+      }, 3000);
+    });
+  </script>
+  {% endblock scripts %}
+</body>
+</html>

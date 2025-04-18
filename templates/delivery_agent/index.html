@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Dashboard{% endblock title %}</title>
+  <link rel="stylesheet" href="/css/delivery_agent/index.css">
+  {% block css %}{% endblock css %}
+</head>
+<body>
+  <aside class="sidebar">
+    <h2>HIFI Delivery <span class="highlight">Eats</span></h2>
+    <ul>
+        <li class="{% if request.endpoint == 'delivery_agent' %}active{% endif %}">
+          <a href="{{ url_for('delivery_agent') }}">👤 Dashboard</a>
+        </li>
+        <li >
+          <a href="#">📦 Available Orders</a>
+        </li>
+        <li class="{% if request.endpoint == 'delivery_partner_profile' %}active{% endif %}">
+          <a href="{{ url_for('delivery_partner_profile') }}">🧑 Profile</a>
+        </li>
+        
+        
+        <li>
+          <a href="{{ url_for('employee_logout') }}" class="logout">🚪 Logout</a>
+        </li>
+      </ul>
+      
+  </aside>
+  <div class="main-content">
+    <!-- Flash messages container -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    
+    {% block content %}{% endblock content %}
+  </div>
+  {% block script %}{% endblock script %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sidebarItems = document.querySelectorAll('.sidebar ul li');
+        sidebarItems.forEach(item => {
+          item.addEventListener('click', function(e) {
+            // Remove active class from all items
+            sidebarItems.forEach(i => i.classList.remove('active'));
+            // Add active class to clicked item
+            this.classList.add('active');
+          });
+        });
+      });
+    </script>
+</body>
+</html>

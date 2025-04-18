@@ -1,0 +1,454 @@
+{% extends 'admin/base_admin2.html' %} {% block title %}Admin Dashboard - HIFI
+Delivery Eats{% endblock title %} {% block css %} {{ super() }}
+<link
+  href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+  rel="stylesheet"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+/>
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/admin/dashboard.css') }}"
+/>
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/admin/insights.css') }}"
+/>
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/admin/delivery_partner.css') }}"
+/>
+{% endblock css %} {% block navbar %} {{ super() }} {% endblock navbar %} {%
+block content %}{% endblock content %} {%block content2 %}
+<div class="container">
+  <div class="dashboard-header bd-container">
+    <h1 class="home__title">Dashboard</h1>
+    <p>Hi, Welcome back to ADMIN!</p>
+  </div>
+
+  <div class="insights bd-container">
+    <!-- Insights section unchanged -->
+    <div class="summary-card" data-section="business-insights">
+      <span class="icon"><i class="bx bx-trending-up"></i></span>
+      <h3>Business Performance Insights</h3>
+      <div class="stock-animation">
+        <svg class="stock-line" width="60" height="40">
+          <polyline
+            points="0,40 15,30 30,35 45,20 60,25"
+            fill="none"
+            stroke="#069c54"
+            stroke-width="2"
+          />
+        </svg>
+      </div>
+      <p>Track your business growth trends</p>
+    </div>
+    <div class="summary-card" data-section="order-assignment">
+      <span class="icon"><i class="bx bx-transfer"></i></span>
+      <h3>Order Assignment</h3>
+      <div class="order-assignment-animation">
+        <img
+          src="{{ url_for('static', filename='images/box.gif') }}"
+          alt="Order Assignment Animation"
+          class="animation-image"
+        />
+      </div>
+      <p>Assign orders to delivery agents</p>
+    </div>
+    <div class="summary-card" data-section="delivery-agents">
+      <span class="icon"><i class="bx bx-cycling"></i></span>
+      <h3>Delivery Agents</h3>
+      <div class="delivery-agent-animation">
+        <img
+          src="{{ url_for('static', filename='images/delivery.png') }}"
+          alt="Delivery Agent"
+          class="animation-image"
+        />
+      </div>
+      <p>Monitor agent availability</p>
+    </div>
+    <div class="summary-card" data-section="history">
+      <span class="icon"><i class="bx bx-history"></i></span>
+      <h3>
+        Order <br />
+        History
+      </h3>
+      <div class="history-animation">
+        <img
+          src="{{ url_for('static', filename='images/clipboard.gif') }}"
+          alt="History Animation"
+          class="animation-image"
+        />
+      </div>
+      <p>View past order activities</p>
+    </div>
+  </div>
+
+  <!-- Business Insights Section unchanged -->
+  <div class="section-content business-insights">
+    {% block insights %}
+    <!--
+        <aside class="sidebar">
+            <div class="stat-card">
+                <i class="fas fa-truck"></i>
+                <div class="stat-info">
+                    <h2>Average Delivery Time</h2>
+                    <span class="stat-number">{{ avg_delivery_time }} mins</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div class="stat-info">
+                    <h2>Delivery Partner Performance</h2>
+                    <span class="stat-number">{{ delivery_partner_performance }}%</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-clock"></i>
+                <div class="stat-info">
+                    <h2>Return & Refund Statistics</h2>
+                    <span class="stat-number">{{ return_refund_percentage }}%</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-shipping-fast"></i>
+                <div class="stat-info">
+                    <h2>On-Time Order Percentage</h2>
+                    <span class="stat-number">{{ on_time_order_percentage }}%</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-chart-line"></i>
+                <div class="stat-info">
+                    <h2>Revenue Per Delivery</h2>
+                    <span class="stat-number">₹ {{ revenue_per_delivery }}</span>
+                </div>
+            </div>
+        </aside>
+        -->
+    <main class="dashboard-content">
+      <h1>Business Insights Dashboard</h1>
+
+      <div class="images-container">
+        {% if charts %} {% for chart in charts %}
+        <div class="image-box">{{ chart|safe }}</div>
+        {% endfor %} {% else %}
+        <p>No charts available.</p>
+        {% endif %}
+      </div>
+    </main>
+    {% endblock insights %}
+  </div>
+
+  <!-- Order Assignment Section with updated buttons -->
+  <div
+    class="section-content order-assignment bd-container"
+    style="display: none"
+  >
+    <div class="order-list">
+      <h2 class="section-title">Order List</h2>
+      <div class="order-tabs" id="order-tabs"></div>
+      <div class="order-items" id="order-items"></div>
+    </div>
+    <div
+      class="popup-overlay"
+      id="agent-assignment-popup"
+      style="display: none"
+    >
+      <div class="popup">
+        <h3 id="agent-popup-title">Assign Delivery Agent</h3>
+        <div id="agent-list" class="agent-list"></div>
+        <button id="agent-popup-close" class="popup-close">Close</button>
+      </div>
+    </div>
+    <!-- New Table Section -->
+    <div class="all-orders-section">
+      <h2>All Orders</h2>
+      <table id="all-orders-table">
+        <thead>
+          <tr>
+            <th data-sort="order_id">Order ID</th>
+            <th data-sort="customer_name">Customer</th>
+            <th data-sort="status">Status</th>
+            <th data-sort="total_price">Total</th>
+            <th data-sort="created_at">Date</th>
+            <th>Delivery Agent</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div id="pagination"></div>
+    </div>
+  </div>
+
+  <!-- Delivery Agents and History Sections unchanged -->
+  <div
+    class="section-content delivery-agents bd-container"
+    style="display: none"
+  >
+    <div class="delivery-agents">
+      <h2 class="section-title">Delivery Agent Status</h2>
+      <div class="agent-list" id="agent-list-ui"></div>
+    </div>
+    <!-- Custom Confirmation Modal -->
+    <div id="confirmationModal" class="modal" style="display: none">
+      <div class="modal-content">
+        <p id="modalMessage"></p>
+        <div class="modal-actions">
+          <button id="confirmBtn" class="confirm-btn">Confirm</button>
+          <button id="cancelBtn" class="cancel-btn">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <h2>Delivery Partners</h2>
+
+    <div class="table-container">
+      <h3>Pending Partners</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Delivery Area</th>
+            <th>ID Proof</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="userList">
+          {% for agent in pending_agents %}
+          <tr id="user-{{ agent.delivery_agent_id }}">
+            <td>{{ agent.username }}</td>
+            <td>{{ agent.delivery_agent_id }}</td>
+            <td>{{ agent.email }}</td>
+            <td>{{ agent.phone }}</td>
+            <td>{{ agent.delivery_area }}</td>
+            <td>{{ agent.id_proof }}</td>
+            <td>
+              <button
+                class="accept"
+                onclick="handleAccept('{{ agent.delivery_agent_id }}')"
+              >
+                Accept
+              </button>
+              <button
+                class="reject"
+                onclick="handleReject('{{ agent.delivery_agent_id }}')"
+              >
+                Reject
+              </button>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="7">No pending agents.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-container">
+      <h3>All Delivery Partners</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Delivery Area</th>
+            <th>ID Proof</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="acceptedAgentsList">
+          {% for agent in accepted_agents %}
+          <tr id="user-{{ agent.delivery_agent_id }}">
+            <td
+              style="color: {% if not agent.is_active %}red{% else %}green{% endif %};"
+            >
+              {{ agent.username }}
+            </td>
+            <td>{{ agent.delivery_agent_id }}</td>
+            <td>{{ agent.email }}</td>
+            <td>{{ agent.phone }}</td>
+            <td>{{ agent.delivery_area }}</td>
+            <td>{{ agent.id_proof }}</td>
+            <td>
+              <!-- Toggle switch for active status -->
+              <label class="switch">
+                <input type="checkbox" onchange="confirmToggleAgent('{{
+                agent.delivery_agent_id }}', this)" {{ 'checked' if
+                agent.is_active else '' }} />
+                <span class="slider"></span>
+              </label>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="7">No accepted agents.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section-content history bd-container" style="display: none">
+    <!-- Stat Cards Section -->
+    <div
+      class="stats-container"
+      style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 30px"
+    >
+      <div class="stat-card">
+        <i class="fas fa-truck"></i>
+        <div class="stat-info">
+          <h2>Average Delivery Time</h2>
+          <span class="stat-number">{{ avg_delivery_time }} mins</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-shopping-cart"></i>
+        <div class="stat-info">
+          <h2>Total Orders</h2>
+          <span class="stat-number">{{ total_orders }}</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-handshake"></i>
+        <div class="stat-info">
+          <h2>Total Order Delivered</h2>
+          <span class="stat-number">{{ delivered_orders }}</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-chart-line"></i>
+        <div class="stat-info">
+          <h2>Total Revenue</h2>
+          <span class="stat-number">₹ {{ total_revenue }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Orders Table Section -->
+    <div class="recent-activity-section">
+      <h2 class="section-title">Recent Activity</h2>
+      <table class="data-table" id="recentOrders">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Items</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Feedback</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in recent_orders %}
+          <tr>
+            <td>{{ order['order_id'] }}</td>
+            <td>{{ order['customer_name'] }}</td>
+            <td>
+              {% if order['order_items'] %} {% for item in order['order_items']
+              %} {{ item['menu_item_name'] }} ({{ item['quantity'] }}){% if not
+              loop.last %}, {% endif %} {% endfor %} {% else %} N/A {% endif %}
+            </td>
+            <td>₹{{ order['total_price'] | round(2) }}</td>
+            <td
+              class="{% if order['status'] == 'Pending' %}status-pending{% elif order['status'] == 'Delivered' %}status-completed{% elif order['status'] == 'Cancelled' %}status-cancelled{% endif %}"
+            >
+              {{ order['status'] }}
+            </td>
+            <td>
+              {% if order['avg_feedback'] is not none %} {% set rounded_rating =
+              order['avg_feedback'] | round(0, 'common') | int %} {% for i in
+              range(rounded_rating) %}
+              <span style="color: yellow">&#9733;</span>
+              {% endfor %} {% for i in range(5 - rounded_rating) %}
+              <span style="color: grey">&#9734;</span>
+              {% endfor %} {% else %} N/A {% endif %}
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="6">No recent orders found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="custom-popup" class="custom-popup">
+  <span id="popup-message"></span>
+  <button id="popup-close">OK</button>
+</div>
+{% endblock content2 %} {% block footer %}{% endblock footer %} {% block scripts
+%} {{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+<script
+  src="{{ url_for('static', filename='js/admin/dashboard.js') }}"
+  defer
+></script>
+
+<!-- Delivery-partner script -->
+<!-- Link to your admin-specific JavaScript file -->
+<script src="{{ url_for('static', filename='js/admin/delivery_partner.js') }}"></script>
+<script>
+  function confirmToggleAgent(agentId, checkbox) {
+    // Prevent multiple confirmations if modal is already open.
+    const modal = document.getElementById("confirmationModal");
+    if (modal.style.display === "block") return;
+
+    // Determine intended new state.
+    const newState = checkbox.checked;
+    // Save the current state (the opposite) for reverting if needed.
+    const originalState = !newState;
+
+    // Set modal message.
+    document.getElementById(
+      "modalMessage"
+    ).innerText = `Are you sure you want to ${
+      newState ? "activate" : "deactivate"
+    } this delivery partner?`;
+    modal.style.display = "block";
+
+    // Attach event listeners with once:true so they fire only once.
+    document.getElementById("confirmBtn").addEventListener(
+      "click",
+      function confirmHandler() {
+        if (newState) {
+          handleActivate(agentId).then((success) => {
+            if (!success) {
+              checkbox.checked = originalState; // Revert if update fails.
+            }
+          });
+        } else {
+          handleDeactivate(agentId).then((success) => {
+            if (!success) {
+              checkbox.checked = originalState; // Revert if update fails.
+            }
+          });
+        }
+        modal.style.display = "none";
+      },
+      { once: true }
+    );
+
+    document.getElementById("cancelBtn").addEventListener(
+      "click",
+      function cancelHandler() {
+        checkbox.checked = originalState; // Revert to original state.
+        modal.style.display = "none";
+      },
+      { once: true }
+    );
+  }
+</script>
+{% endblock scripts %}

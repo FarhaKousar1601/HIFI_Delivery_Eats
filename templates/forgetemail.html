@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forgot Password | HIFI Delivery Eats</title>
+
+    <!-- Link Css file -->
+    {% block css %}
+      <link rel="stylesheet" href="/css/forgetemail.css" />
+    {% endblock css %}
+    
+  </head>
+  <body>
+    <div class="forgot-password-container">
+      <h2>🔒 Forgot Password</h2>
+      <p>Enter your email address to receive a password reset link.</p>
+
+      <form id="forgotPasswordForm" action="/forget_password" method="POST">
+        <label for="email">📧 Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Enter your email"
+          required
+        />
+
+        <button type="submit">Send Reset Link 📩</button>
+      </form>
+
+      <p id="successMessage" class="hidden">✅ Reset link sent successfully!</p>
+      
+      <!-- Redirect the login page  -->
+      <p class="back-to-login">⬅ <a href="{{ url_for('login') }}">Back to Login</a></p>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("forgotPasswordForm");
+        const successMessage = document.getElementById("successMessage");
+
+        form.addEventListener("submit", async function (event) {
+          event.preventDefault(); // Prevent full page reload
+
+          const formData = new FormData(form);
+          const response = await fetch("/forget_password", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (response.ok) {
+            console.log(response);
+            successMessage.classList.remove("hidden");
+            setTimeout(() => {
+              successMessage.classList.add("hidden");
+            }, 3000);
+          } else {
+            alert("❌ Failed to send reset email. Please try again.");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

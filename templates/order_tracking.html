@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Delivery Tracking</title>
+    <link rel="stylesheet" href="order_tracking.css">
+</head>
+<body>
+
+    <h2>Track Your Order</h2>
+
+    <div class="tracking-container">
+        <div class="step-line"></div>
+
+        <div class="tracking-step active">
+            <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" alt="Accepted">
+            <div class="step-text">Accepted</div>
+        </div>
+
+        <div class="tracking-step">
+            <img src="https://cdn-icons-png.flaticon.com/512/1046/1046784.png" alt="Picked Up">
+            <div class="step-text">Picked Up</div>
+        </div>
+
+        <div class="tracking-step">
+            <img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" alt="Out for Delivery">
+            <div class="step-text">Out for Delivery</div>
+        </div>
+
+        <div class="tracking-step">
+            <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" alt="Delivered">
+            <div class="step-text">Delivered</div>
+        </div>
+    </div>
+
+    <div class="progress-bar">
+        <div class="progress"></div>
+    </div>
+
+    <button onclick="trackOrder()">Next Step</button>
+
+    <script src="order_tracking.js"></script>
+</body>
+</html>

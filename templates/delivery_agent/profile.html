@@ -1,0 +1,172 @@
+{% extends "/delivery_agent/index.html" %}
+{% block title %}Profile{% endblock title %}
+{% block css %}
+<link rel="stylesheet" href="/css/delivery_agent/profile.css">
+{% endblock css %}
+
+{% block content %}
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div class="toast-title">Profile updated</div>
+        <div class="toast-description">Your profile has been updated successfully.</div>
+    </div>
+
+    <div class="container">
+        <!-- Single Form for both Profile Preview and Details -->
+        <form id="profile-form" action="{{ url_for('edit_delivery_agent', agent_id=user.delivery_agent_id) }}" method="POST" enctype="multipart/form-data">
+            <div class="profile-container">
+                <!-- Tabs -->
+                <div class="tabs">
+                    <div class="tab-list">
+                        <button type="button" class="tab-button active" data-tab="profile">Profile</button>
+                        <button type="button" class="tab-button" data-tab="deliveries">Deliveries</button>
+                        <button type="button" class="tab-button" data-tab="earnings">Earnings</button>
+                    </div>
+
+                    <!-- Profile Tab (Editable Section) -->
+                    <div class="tab-content active" id="profile-tab">
+                        <div class="profile-grid">
+                            <!-- Profile Card: Preview & Image Upload -->
+                            <div class="card">
+                                <div class="card-header text-center">
+                                    <div class="profile-image-container">
+                                        <img id="profile-img" src="{{ url_for('static', filename=user.image) or 'https://via.placeholder.com/128' }}" alt="Profile picture" class="profile-image">
+                                        <!-- File input is now visible in edit mode -->
+                                        <label for="profile-image-input" class="profile-image-upload hidden" id="image-upload-btn">
+                                            <svg class="icon" viewBox="0 0 24 24" width="16" height="16">
+                                                <path fill="white" d="M3 4V1h2v3h3v2H5v3H3V6H0V4h3zm3 6V7h3V4h7l1.83 2H21c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V10h3zm7 9c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-3.2-5c0 1.77 1.43 3.2 3.2 3.2s3.2-1.43 3.2-3.2-1.43-3.2-3.2-3.2-3.2 1.43-3.2 3.2z"></path>
+                                            </svg>
+                                            <input type="file" id="profile-image-input" name="image" accept="image/*">
+                                        </label>
+                                    </div>
+                                    <h3 class="profile-name" id="display-name">{{ user.username }}</h3>
+                                    <p class="profile-role">Delivery Partner</p>
+                                </div>
+                                <div class="card-content">
+                                    <ul class="info-list">
+                                        <li class="info-item">
+                                            <svg class="info-icon" viewBox="0 0 24 24">
+                                                <path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"></path>
+                                            </svg>
+                                            <span id="display-email">{{ user.email }}</span>
+                                        </li>
+                                        <li class="info-item">
+                                            <svg class="info-icon" viewBox="0 0 24 24">
+                                                <path fill="currentColor" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"></path>
+                                            </svg>
+                                            <span id="display-phone">{{ user.phone }}</span>
+                                        </li>
+                                        <li class="info-item">
+                                            <svg class="info-icon" viewBox="0 0 24 24">
+                                                <path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path>
+                                            </svg>
+                                            <span id="display-area">{{ user.delivery_area }}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="card-footer">
+                                    <div>
+                                        <p class="stat-label">Rating</p>
+                                        <p class="stat-value">4.8</p>
+                                    </div>
+                                    <div>
+                                        <p class="stat-label">Deliveries</p>
+                                        <p class="stat-value">0</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Details (Editable Fields) -->
+                            <div class="card">
+                                <div class="card-header card-header-flex">
+                                    <div>
+                                        <h3 class="card-title">Partner Details</h3>
+                                        <p class="card-description">Manage your profile information</p>
+                                    </div>
+                                    <!-- This button toggles edit mode -->
+                                    <button type="button" id="edit-toggle-btn" class="btn btn-primary btn-sm">
+                                        <svg class="btn-icon icon" viewBox="0 0 24 24" width="16" height="16">
+                                            <path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"></path>
+                                        </svg>
+                                        Edit
+                                    </button>
+                                </div>
+                                <div class="card-content">
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label for="name" class="form-label">Full Name</label>
+                                            <input type="text" id="name" name="username" class="form-control" value="{{ user.username }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="email" class="form-label">Email</label>
+                                            <input type="email" id="email" name="email" class="form-control" value="{{ user.email }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="phone" class="form-label">Phone Number</label>
+                                            <input type="text" id="phone" name="phone" class="form-control" value="{{ user.phone }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="deliveryArea" class="form-label">Delivery Area</label>
+                                            <input type="text" id="deliveryArea" name="delivery_area" class="form-control" value="{{ user.delivery_area }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="bio" class="form-label">Bio</label>
+                                            <textarea id="bio" name="bio" class="form-control">{{ user.bio }}</textarea>
+                                        </div>
+                                        <div class="form-group form-switch">
+                                            <label for="available" class="form-label">Available for Deliveries</label>
+                                            <label class="switch">
+                                                <input type="checkbox" id="available" name="available_slots" {% if user.available_slots %}checked{% endif %}>
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div id="edit-buttons" class="btn-group hidden">
+                                        <button type="button" id="cancel-btn" class="btn btn-outline">Cancel</button>
+                                        <button type="submit" id="save-btn" class="btn btn-primary">Save Changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Other Tabs (static placeholders) -->
+                    <div class="tab-content" id="deliveries-tab">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Delivery History</h3>
+                                <p class="card-description">View your past and upcoming deliveries</p>
+                            </div>
+                            <div class="card-content">
+                                <div class="placeholder-content">
+                                    Delivery history will be displayed here.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="earnings-tab">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Earnings Dashboard</h3>
+                                <p class="card-description">Track your earnings and payments</p>
+                            </div>
+                            <div class="card-content">
+                                <div class="placeholder-content">
+                                    Earnings information will be displayed here.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block script %}
+    <script src="/js/delivery_agent/profile.js"></script>
+{% endblock %}

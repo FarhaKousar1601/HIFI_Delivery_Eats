@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HIFI Delivery Eats - Login</title>
+
+  {% block css %}
+    <link rel="stylesheet" href="/css/login.css" />
+  {% endblock css %}
+
+</head>
+<body>
+  <!-- Flash Messages (positioned right below the header) -->
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="flash-messages" id="flash-messages">
+        {% for message in messages %}
+          <p class="flash-message">{{ message }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <form action='/login' method='POST' class="container">
+    <h2>HIFI Delivery Eats</h2>
+
+    <div class="input-group">
+      <input type="text" name="phone-email" placeholder="Enter your phone / email">
+    </div>
+
+    <div class="input-group">
+      <input type="password" id="password" name="password" placeholder="Enter your password">
+      <i onclick="togglePassword()">👁</i>
+    </div>
+
+    <button>Login</button>
+
+    <!--
+    <button class="google-btn">
+      <img src="https://img.icons8.com/color/24/000000/google-logo.png"/> Sign up with Google
+    </button>
+    -->
+    
+    <p class="signup-link"><a href="{{ url_for('forget_password') }}">Forget password</a></p>
+    <p class="signup-link">Don't have an account? <a href="{{ url_for('signup') }}">Sign up</a></p>
+
+    <!-- Added horizontal separator line above the delivery signup link -->
+    <hr class="separator">
+    <p class="signup-link">
+      <a href="{{ url_for('employee_login') }}">Login as Employee</a>
+    </p>
+  </form>
+
+  <script>
+    function togglePassword() {
+      let pass = document.getElementById("password");
+      if (pass.type === "password") {
+        pass.type = "text";
+      } else {
+        pass.type = "password";
+      }
+    }
+
+    setTimeout(function() {
+      const flashMessages = document.getElementById('flash-messages');
+      if (flashMessages) {
+        flashMessages.style.opacity = '0';
+        // Optionally remove from DOM after fade-out
+        setTimeout(() => flashMessages.remove(), 500);
+      }
+    }, 5000);
+
+    // Toggle nav menu for mobile devices
+    const navToggle = document.getElementById('nav-toggle');
+    const navMenu = document.getElementById('nav-menu');
+
+    if (navToggle && navMenu) {
+      navToggle.addEventListener('click', () => {
+        navMenu.classList.toggle('show-menu');
+      });
+    }
+  </script>
+</body>
+</html>

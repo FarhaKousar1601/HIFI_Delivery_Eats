@@ -1,0 +1,260 @@
+{% extends "delivery_agent/index.html" %} {% block content %}
+<header>
+  <h1>Delivery Partner Dashboard</h1>
+  <div class="admin-card">
+    <img
+      src="{{url_for('static', filename=user.image) or 'https://img.lovepik.com/element/45001/3052.png_860.png'}}"
+      alt="Profile"
+      class="profile-image"
+    />
+    <div class="admin-info">
+      <p><strong>{{ user.username }}</strong></p>
+      <p class="role">Delivery Partner</p>
+    </div>
+  </div>
+</header>
+
+<section class="dashboard-stats">
+  <div class="card">
+    📈 Total Orders Today
+    <h2>{{ todays_deliveries_count }}</h2>
+  </div>
+  <div class="card completed">
+    🛍️ Completed Orders
+    <h2>{{ completed_count }}</h2>
+  </div>
+  <div class="card pending">
+    📊 Pending Orders
+    <h2>{{ pending_count }}</h2>
+  </div>
+</section>
+
+<!-- Tabs Header -->
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'recent')" id="defaultOpen">
+    Recent Orders
+  </button>
+  <button class="tablinks" onclick="openTab(event, 'assigned')">
+    Assigned Deliveries
+  </button>
+  <button class="tablinks" onclick="openTab(event, 'completed')">
+    Completed Deliveries
+  </button>
+</div>
+
+<!-- Tab Content: Recent Orders -->
+<div id="recent" class="tabcontent">
+  <h2>Recent Orders</h2>
+  {% if pending_orders %}
+  <table>
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Order Time</th>
+        <th>Customer Details</th>
+        <th>Delivery Location</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in pending_orders %}
+      <tr>
+        <td>{{ order.order_id }}</td>
+        <td>{{ order.order_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        <td>
+          {{ order.customer_name }}<br />
+          {{ order.customer_phone }}
+        </td>
+        <td>{{ order.delivery_location }}</td>
+        <td>
+          <span class="status-value pending">Pending</span>
+        </td>
+        <td>
+          <a
+            href="{{ url_for('delivery_partner_order_detail', order_id=order.order_id) }}"
+            >Details</a
+          >
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>No pending orders assigned to you.</p>
+  {% endif %}
+</div>
+
+<!-- Tab Content: Assigned Deliveries -->
+<div id="assigned" class="tabcontent">
+  <h2>Assigned Deliveries</h2>
+  {% if assigned_orders %}
+  <table>
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Scheduled Delivery Time</th>
+        <th>Customer Details</th>
+        <th>Delivery Location</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in assigned_orders %}
+      <tr>
+        <td>{{ order.order_id }}</td>
+        <td>
+          {{ (order.order_date + timedelta(minutes=30)).strftime('%Y-%m-%d
+          %H:%M:%S') }}
+        </td>
+        <td>
+          {{ order.customer_name }}<br />
+          {{ order.customer_phone }}
+        </td>
+        <td>{{ order.delivery_location }}</td>
+        <td style="color: green">{{ order.order_status }}</td>
+        <td>
+          <a
+            href="{{ url_for('delivery_partner_order_tracking', order_id=order.order_id) }}"
+            >Details</a
+          >
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>No assigned orders.</p>
+  {% endif %}
+</div>
+
+<!-- Tab Content: Completed Deliveries -->
+<div id="completed" class="tabcontent">
+  <h2>Completed Deliveries</h2>
+  {% if completed_orders %}
+  <table>
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Delivery Date & Time</th>
+        <th>Customer Details</th>
+        <th>Delivery Location</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in completed_orders %}
+      <tr>
+        <td>{{ order.order_id }}</td>
+        <td>{{ order.order_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        <td>
+          {{ order.customer_name }}<br />
+          {{ order.customer_phone }}
+        </td>
+        <td>{{ order.delivery_location }}</td>
+        <td style="color: blue">{{ order.order_status }}</td>
+        <td>
+          <a
+            href="{{ url_for('delivery_partner_order_detail', order_id=order.order_id) }}"
+            >Details</a
+          >
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>No completed orders.</p>
+  {% endif %}
+</div>
+<!-- Side Information -->
+<div class="side-info">
+  <!-- Today's Earnings Card -->
+  <div class="side-card earnings-card">
+    <h3>Today's Earnings</h3>
+    <div class="earnings-details">
+      <p>
+        Total Earnings:
+        <span class="highlight">
+          ₹{{ (recent_earnings.base_pay | default(0)) + (recent_earnings.bonus | default(0)) }}
+        </span>        
+      </p>
+      {% if earnings and earnings.base_pay %}
+      <p>Base Pay: <span class="highlight">₹{{ earnings.base_pay }}</span></p>
+      {% else %}
+      <p>Base Pay: <span class="highlight">0.0</span></p>
+      {% endif %}
+
+      <p>Bonus: <span class="highlight">₹{{ earnings.bonus }}</span></p>
+      <p>
+        Trips Completed:
+        <span class="highlight">{{ earnings.trips }}</span>
+      </p>
+    </div>
+    <div class="progress-bar">
+      <!-- Calculate the percentage assuming a goal of ₹1,500 -->
+      <div
+        class="progress"
+        style="width: {{ ((earnings.base_pay + earnings.bonus) / 1500 * 100)|round(0, 'floor') }}%;"
+      ></div>
+    </div>
+    <p>
+      <span class="highlight">
+        {{ ((earnings.base_pay + earnings.bonus) / 1500 * 100)|round(0, 'floor')
+        }}%
+      </span>
+      of your goal achieved!
+    </p>
+  </div>
+
+  <!-- Recent Earnings Card -->
+  <div class="side-card recent-earnings-card">
+    <h3>Recent Earnings</h3>
+    <div class="earnings-details">
+      <p>
+        Total Earnings:
+        <span class="highlight">
+          ₹{{ (recent_earnings.base_pay | default(0)) + (recent_earnings.bonus | default(0)) }}
+        </span>
+        
+      </p>
+      {% if earnings and earnings.base_pay %}
+      <p>Base Pay: <span class="highlight">₹{{ earnings.base_pay }}</span></p>
+      {% else %}
+      <p>Base Pay: <span class="highlight">0.0</span></p>
+      {% endif %}
+      <p>Bonus: <span class="highlight">₹{{ recent_earnings.bonus }}</span></p>
+      <p>
+        Earned At:
+        <span class="highlight">
+          {% if recent_earnings.earned_at %} {{
+          recent_earnings.earned_at.strftime('%Y-%m-%d') }} {% else %} N/A {%
+          endif %}
+        </span>
+      </p>
+    </div>
+  </div>
+
+  <!-- JavaScript for Tabs -->
+  <script>
+    function openTab(evt, tabName) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+    // Open default tab on page load
+    document.getElementById("defaultOpen").click();
+  </script>
+
+  {% endblock content %}
+</div>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HIFI Delivery Eats - Login</title>
+
+  <!-- Link CSS file -->
+  {% block css %}
+    <link rel="stylesheet" href="/css/employe_login.css" />
+  {% endblock css %}
+  
+  <!-- Additional inline CSS for UI fixes -->
+  <style>
+    /* Fix for the password input group */
+    .password-input-wrapper {
+      position: relative;
+    }
+    .password-input-wrapper input {
+      width: 100%;
+      padding-right: 40px; /* Space for the eye icon */
+    }
+    .toggle-password-icon {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 1.2em;
+    }
+    /* Horizontal separator style */
+    hr.separator {
+      margin: 20px 0;
+      border: none;
+      border-top: 1px solid #ccc;
+    }
+  </style>
+  
+</head>
+<body>
+  <!-- Flash Messages (positioned right below the header) -->
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="flash-messages" id="flash-messages">
+        {% for message in messages %}
+          <p class="flash-message">{{ message }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <form action="{{ url_for('employee_login') }}" method="POST" class="container">
+    <h2>HIFI Delivery Eats</h2>
+    <h3>Employee Login</h3>
+
+    <div class="input-group">
+      <input type="text" name="phone-email" placeholder="Enter your phone / email">
+    </div>
+
+    <div class="input-group">
+      <div class="password-input-wrapper">
+        <input type="password" id="password" name="password" placeholder="Enter your password">
+        <i onclick="togglePassword()" class="toggle-password-icon">👁</i>
+      </div>
+    </div>
+
+    <!-- Dropdown for Role Selection -->
+    <div class="input-group">
+      <select name="role">
+        <option value="admin">Admin</option>
+        <option value="delivery-agent">Delivery Partners</option>
+      </select>
+    </div>
+
+    <button>Login</button>
+
+    <p class="signup-link">
+      <a href="{{ url_for('forget_password') }}">Forget password</a>
+    </p>
+
+    <!-- Added horizontal separator line above the delivery signup link -->
+    <hr class="separator">
+    <p class="signup-link">
+      <a href="{{ url_for('delivery_signup') }}">Sign up as Delivery Partner</a>
+    </p>
+  </form>
+
+  <script>
+    function togglePassword() {
+      const pass = document.getElementById("password");
+      pass.type = pass.type === "password" ? "text" : "password";
+    }
+    
+    setTimeout(function() {
+      const flashMessages = document.getElementById('flash-messages');
+      if (flashMessages) {
+        flashMessages.style.opacity = '0';
+        // Optionally remove from DOM after fade-out
+        setTimeout(() => flashMessages.remove(), 500);
+      }
+    }, 5000);
+
+    // Toggle nav menu for mobile devices
+    const navToggle = document.getElementById('nav-toggle');
+    const navMenu = document.getElementById('nav-menu');
+    if (navToggle && navMenu) {
+      navToggle.addEventListener('click', () => {
+        navMenu.classList.toggle('show-menu');
+      });
+    }
+  </script>
+
+</body>
+</html>

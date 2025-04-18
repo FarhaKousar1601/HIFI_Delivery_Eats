@@ -1,0 +1,163 @@
+{% extends "/delivery_agent/index.html" %} {% block css %}
+<link rel="stylesheet" href="/css/delivery_agent/order_detail.css" />
+<link
+  href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+  rel="stylesheet"
+/>
+<script
+  src="https://kit.fontawesome.com/a076d05399.js"
+  crossorigin="anonymous"
+></script>
+{% endblock css %} {% block content %}
+<header>
+  <div class="logo">
+    <span class="logo-icon"></span>
+    <h1>Order Detail</h1>
+  </div>
+  <div class="order-status">
+    <span class="status-label">Status:</span>
+    <span class="status-value" id="orderStatus"
+      >{% if order.delivery_status == "Preparing" %}Action Pending{% else %}{{ order.delivery_status }}{% endif %}</span
+    >
+  </div>
+</header>
+
+<main>
+  <section class="order-info card">
+    <h2>Order #{{ order.order_id }}</h2>
+    <p class="order-time">
+      Ordered at:
+      <span id="orderTime"
+        >{{ order.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span
+      >
+    </p>
+    <div class="estimated-delivery">
+      <i class="fas fa-clock"></i>
+      <span>Estimated Delivery: </span>
+      <span id="estimatedDelivery">30:00</span>
+    </div>
+  </section>
+
+  <section class="customer-info card">
+    <h2>Customer Details</h2>
+    <div class="info-grid">
+      <div class="info-item">
+        <i class="fas fa-user"></i>
+        <p id="customerName">{{ order.customer.username }}</p>
+      </div>
+      <div class="info-item phone-info">
+        <i class="fas fa-phone"></i>
+        <p id="customerPhone">{{ order.customer.phone }}</p>
+        <div class="phone-actions">
+          <a href="tel:{{ order.customer.phone }}" class="btn btn-call">
+            <i class="fas fa-phone-alt"></i> Call
+          </a>
+          <a href="sms:{{ order.customer.phone }}" class="btn btn-text">
+            <i class="fas fa-comment-dots"></i> Text
+          </a>
+        </div>
+      </div>
+      <div class="info-item">
+        <i class="fas fa-map-marker-alt"></i>
+        <p id="customerAddress">
+          {% if order.customer.addresses %} {{ order.customer.addresses[0].address_line
+          }}, {{ order.customer.addresses[0].city }}, {{
+          order.customer.addresses[0].state }} - {{ order.customer.addresses[0].zip_code
+          }} {% else %} No address provided. {% endif %}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="order-items card">
+    <h2>Ordered Items</h2>
+    <ul id="itemList">
+      {% for item in order.order_items %}
+      <li>
+        <span>{{ item.menu_item.name }} (x{{ item.quantity }})</span>
+        <span>₹{{ '%.2f' | format(item.price * item.quantity) }}</span>
+      </li>
+      {% else %}
+      <li>No items found.</li>
+      {% endfor %}
+    </ul>
+    {% set ns = namespace(subtotal=0) %}
+    {% for item in order.order_items %}
+        {% set ns.subtotal = ns.subtotal + (item.price * item.quantity) %}
+    {% endfor %}
+    {% set delivery_fee = 50 %}
+    {% set tax = ns.subtotal|float * 0.1 %}
+    {% set total = ns.subtotal|float + delivery_fee + tax %}
+
+    <div class="order-summary">
+      <div class="summary-item">
+        <span>Subtotal:</span>
+        <span id="subtotal">₹{{ '%.2f' | format(ns.subtotal) }}</span>
+      </div>
+      <div class="summary-item">
+        <span>Delivery Fee:</span>
+        <span id="deliveryFee">₹{{ '%.2f' | format(delivery_fee) }}</span>
+      </div>
+      <div class="summary-item">
+        <span>Tax:</span>
+        <span id="tax">₹{{ '%.2f' | format(tax) }}</span>
+      </div>
+      <div class="summary-item total">
+        <span>Total:</span>
+        <span id="orderTotal">₹{{ '%.2f' | format(total) }}</span>
+      </div>
+    </div>
+  </section>
+
+  {% if order.delivery_status != "Delivered" and order.delivery_status != "Accepted" %}
+  <section class="delivery-actions card">
+    <div class="card-header">
+      <h2 class="mb-0">Manage Order</h2>
+    </div>
+    <div class="card-body">
+      <div class="button-row">
+        <!-- Accept Order Form -->
+        <div class="button-col">
+          <form action="/order/{{ order.order_id }}/accept" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+            <button type="submit" class="btn btn-success btn-block">
+              Accept
+            </button>
+          </form>
+        </div>
+        <!-- Decline Order Form -->
+        <div class="button-col">
+          <form action="/order/{{ order.order_id }}/decline" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+            <button type="submit" class="btn btn-danger btn-block">
+              Decline
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+  {% endif %} {% if order.delivery_status == "Delivered" %}
+  <section class="customer-review">
+    <h2>Customer Review</h2>
+    <div class="review-container">
+      <div class="stars" id="starDisplay">
+        {% for i in range(1, 6) %}
+        <span
+          class="star{% if feedback and i <= feedback.rating %} filled{% endif %}"
+          data-value="{{ i }}"
+          >&#9733;</span
+        >
+        {% endfor %}
+      </div>
+      <p id="reviewText">
+        {% if feedback and feedback.feedback %} {{ feedback.feedback }} {% else
+        %} No review provided yet. {% endif %}
+      </p>
+    </div>
+  </section>
+  {% endif %}
+</main>
+{% endblock content %} {% block script %}
+<script src="/js/delivery_agent/order_detail.js"></script>
+{% endblock %}

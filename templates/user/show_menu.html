@@ -1,0 +1,121 @@
+{% extends "index.html" %} {% block title %}More Menu - HIFI Delivery Eats{%
+endblock title %} {% block css %} {{super()}}
+<link href="https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user/show_menu.css') }}" />
+{% endblock css %}
+
+{%block nav_bar%}{{super()}}{%endblock nav_bar%}
+
+{% block content %}
+<section class="menu section bd-container" id="more-menu">
+    <span class="section-subtitle">Explore Our Menu</span>
+    <h2 class="section-title" id="menu-heading">All Menu Items</h2>
+    <div class="filter-options">
+        <div class="filter-group">
+            <label for="veg-nonveg-filter">Filter by Type:</label>
+            <select id="veg-nonveg-filter">
+                <option value="">All Types</option>
+                <option value="Veg">Veg</option>
+                <option value="Non-Veg">Non-Veg</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="sub-category">Filter by Subcategory:</label>
+            <select id="sub-category">
+                <option value="">All Subcategories</option>
+                <option value="Starter">Starter</option>
+                <option value="Soup">Soups</option>
+                <option value="Salad">Salads</option>
+                <option value="Bread">Breads</option>
+                <option value="Main Course">Main Course</option>
+                <option value="Beverage">Beverages</option>
+                <option value="Breakfast">Breakfast</option>
+                <option value="Biryani">Biryani</option>
+                <option value="Icecream">Icecreams</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- New Recommendations Section -->
+    <div class="menu-category" data-category="Recommendation" id="recommendation-section">
+        <h3 class="category-title">Personalized Item Recommendations</h3>
+        <div class="menu__container bd-grid" id="recommendation-container"></div>
+    </div>
+
+    <!-- Category: Starter -->
+    <div class="menu-category" data-category="Starter">
+        <h3 class="category-title">Starter</h3>
+        <div class="menu__container bd-grid">
+            <!-- Dynamically add new entries -->
+        </div>
+    </div>
+
+    <!-- Category: Soups -->
+    <div class="menu-category" data-category="Soup">
+        <h3 class="category-title">Soups</h3>
+        <div class="menu__container bd-grid">
+            <!-- Dynamically add new entries and fetch from db -->
+        </div>
+    </div>
+
+    <!-- Category: Salads -->
+    <div class="menu-category" data-category="Salad">
+        <h3 class="category-title">Salads</h3>
+        <div class="menu__container bd-grid">
+            <!-- Dynamically add new entries and fetch from db -->
+        </div>
+    </div>
+
+    <!-- Category: Breads -->
+    <div class="menu-category" data-category="Bread">
+        <h3 class="category-title">Breads</h3>
+        <div class="menu__container bd-grid">
+            <!-- Dynamically add new entries and fetch from db -->
+        </div>
+    </div>
+
+    <!-- Category: Main Course -->
+    <div class="menu-category" data-category="Main Course">
+        <h3 class="category-title">Main Course</h3>
+        <div class="menu__container bd-grid">
+            <!-- Dynamically add new entries and fetch from db -->
+        </div>
+    </div>
+
+    <!-- Category: Beverages -->
+    <div class="menu-category" data-category="Beverage">
+        <h3 class="category-title">Beverages</h3>
+        <div class="menu__container bd-grid">
+            <!-- Dynamically add new entries and fetch from db -->
+        </div>
+    </div>
+
+    <!-- Category: Breakfast -->
+    <div class="menu-category" data-category="Breakfast">
+        <h3 class="category-title">Breakfast</h3>
+        <div class="menu__container bd-grid">
+            <!-- Dynamically add new entries and fetch from db -->
+        </div>
+    </div>
+
+    <!-- Category: Biryani -->
+    <div class="menu-category" data-category="Biryani">
+        <h3 class="category-title">Biryani</h3>
+        <div class="menu__container bd-grid">
+            <!-- Dynamically add new entries and fetch from db -->
+        </div>
+    </div>
+
+    <!-- Category: Icecreams -->
+    <div class="menu-category" data-category="Icecream">
+        <h3 class="category-title">Icecreams</h3>
+        <div class="menu__container bd-grid">
+            <!-- Dynamically add new entries and fetch from db -->
+        </div>
+    </div>
+
+</section>
+{% endblock content %} {% block scripts %} {{super()}}
+<script src="https://unpkg.com/scrollreveal" defer></script>
+<script src="{{ url_for('static', filename='js/user/show_menu.js') }}" defer></script>
+{% endblock scripts %}

@@ -1,0 +1,70 @@
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #e0f7e9;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .forgot-password-container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 350px;
+      }
+      h2 {
+        color: #2e7d32;
+      }
+      p {
+        color: #666;
+        font-size: 14px;
+      }
+      label {
+        display: block;
+        font-weight: bold;
+        margin-top: 10px;
+        text-align: left;
+      }
+      input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+      }
+      button {
+        background-color: #2e7d32;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 15px;
+      }
+      button:hover {
+        background-color: #1b5e20;
+      }
+      .hidden {
+        display: none;
+      }
+      #successMessage {
+        color: green;
+        font-weight: bold;
+        margin-top: 10px;
+      }
+      .back-to-login a {
+        text-decoration: none;
+        color: #2e7d32;
+        font-weight: bold;
+      }
+      .back-to-login a:hover {
+        text-decoration: underline;
+      }
+    

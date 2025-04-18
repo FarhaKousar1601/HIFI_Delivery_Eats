@@ -1,0 +1,152 @@
+/* Form Styles for Add New Menu Item */
+#menu-form {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    max-width: 600px;
+    /* Optional: Limits form width */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#menu-form label {
+    font-weight: bold;
+    color: #069c54;
+    display: block;
+    /* Ensures labels stack above inputs */
+}
+
+#menu-form input[type="text"],
+#menu-form input[type="number"],
+#menu-form input[type="datetime-local"],
+#menu-form textarea,
+#menu-form select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#menu-form input[type="file"] {
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+#menu-form input[type="radio"] {
+    margin-right: 10px;
+    margin-top: 5px;
+}
+
+#menu-form button[type="submit"] {
+    background-color: #069c54;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    display: block;
+    /* Centers button */
+    margin: 0 auto;
+}
+
+#menu-form button[type="submit"]:hover {
+    background-color: #048654;
+}
+
+/* Table Styles for Menu Items */
+#menu-table-body-table {
+    /* Targeting the table containing #menu-table-body */
+    font-family: "Arial", sans-serif;
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#menu-table-body-table th,
+#menu-table-body-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+}
+
+#menu-table-body-table th {
+    background-color: #069c54;
+    color: #ffffff;
+}
+
+#menu-table-body-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+#menu-table-body-table td a {
+    color: #069c54;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+#menu-table-body-table td a:hover {
+    text-decoration: underline;
+}
+
+/* Button Styling within Table */
+#menu-table-body-table .edit-btn,
+#menu-table-body-table .delete-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#menu-table-body-table .edit-btn {
+    background-color: #28a745;
+    color: #ffffff;
+}
+
+#menu-table-body-table .edit-btn:hover {
+    background-color: #218838;
+}
+
+#menu-table-body-table .delete-btn {
+    background-color: #dc3545;
+    color: #ffffff;
+}
+
+#menu-table-body-table .delete-btn:hover {
+    background-color: #c82333;
+}
+
+/* Content Container to Avoid Navbar Overlap */
+.menu-content {
+    padding-top: calc(80px + 1rem);
+    /* Adjust based on your navbar height */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #menu-form {
+        padding: 15px;
+    }
+
+    #menu-table-body-table {
+        font-size: 14px;
+    }
+
+    #menu-table-body-table th,
+    #menu-table-body-table td {
+        padding: 8px;
+    }
+}
+
+h2{
+    text-align: center;
+    margin: 1rem;
+}

@@ -1,0 +1,327 @@
+/* Global Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    background: #f0fff0;
+  }
+  
+  /* Sidebar styling */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: auto;  /* Increased width so title displays properly */
+    height: 100vh;
+    background: linear-gradient(180deg, #0b3d1e, #156425, #1e8e3e);
+    padding: 20px;
+    color: white;
+    overflow-y: auto;
+  }
+  
+  .sidebar h2 {
+    color: white;
+    font-size: 1.8em;
+    font-weight: bold;
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar ul li {
+    padding: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+    color: white;
+  }
+  
+  .sidebar ul li:hover {
+    background: #636e72;
+    border-radius: 5px;
+  }
+  
+  /* Remove text decoration for sidebar links */
+  .sidebar a {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  /* Main content should appear to the right of the sidebar */
+  .main-content {
+    margin: 20px 20px 20px 320px; /* Extra left margin to clear the sidebar (300px + 20px gap) */
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+  }
+  
+ /* Flash messages container styling for success notifications */
+.flash-messages {
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 5px;
+  background: linear-gradient(135deg, #d4edda 0%, #a4ebaf 100%);
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  /* Animation: delay 5 seconds, then fade out over 1 second */
+  animation: fadeOut 1s ease-out 5s forwards;
+}
+
+/* Fade out animation keyframes */
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+  }
+}
+  
+  /* Other existing CSS remains unchanged */
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #ddd;
+  }
+  .dashboard-stats {
+    display: flex;
+    gap: 20px;
+    margin: 20px 0;
+  }
+  .card {
+    background: #f1f2f6;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+    flex: 1;
+    text-align: center;
+    transition: 0.3s;
+  }
+  .card:hover {
+    box-shadow: 4px 4px 15px rgba(0,0,0,0.2);
+  }
+  .admin-card {
+    background: #f0fff0;
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: 0.3s;
+  }
+  .admin-card:hover {
+    box-shadow: 4px 4px 15px rgba(0,0,0,0.2);
+  }
+  .admin-card p {
+    margin: 0;
+  }
+  .pending {
+    color: red;
+    font-weight: bold;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  th {
+    background: #f5f5f5;
+    font-weight: 600;
+  }
+  tr:hover {
+    background-color: #f9f9f9;
+  }
+  td a {
+    color: #0984e3;
+    text-decoration: none;
+  }
+  .profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .theme-toggle {
+    cursor: pointer;
+  }
+  .side-info {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  .side-card {
+    background: #f1f2f6;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+    flex: 1;
+    transition: 0.3s;
+    text-align: center;
+  }
+  .side-card:hover {
+    box-shadow: 4px 4px 15px rgba(0,0,0,0.2);
+  }
+  .highlight {
+    color: #ffffff;
+  }
+  .profile-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .admin-info {
+    display: flex;
+    flex-direction: column;
+  }
+  .logout {
+    text-decoration: none;
+    color: white;
+  }
+
+   /* Highlight active tab */
+   .sidebar ul li.active{
+     background: rgba(255, 255, 255, 0.2);
+     border-radius: 5px;
+   }
+
+   .status-value.pending {
+    color: orange;
+  }
+  
+  .status-value.completed {
+    color: green;
+  }
+  
+  .status-value.in-progress {
+    color: blue;
+  }
+  
+  /* Optional: a default style */
+  .status-value {
+    font-weight: bold;
+  }
+  
+  /* Tabs Container */
+.tab {
+  overflow: hidden;
+  border-bottom: 2px solid #ddd;
+  background-color: #f1f1f1;
+  margin-bottom: 20px;
+  border-radius: 8px 8px 0 0;
+}
+
+/* Tab Buttons */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 20px;
+  transition: background-color 0.3s, color 0.3s;
+  font-size: 17px;
+  color: #0b3d1e;
+}
+
+/* Hover state for buttons */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Active tab style */
+.tab button.active {
+  background-color: #cccccc6e;
+  color: #156425;
+  font-weight: bold;
+  border-bottom: 2px solid #156425;
+}
+
+/* Tab Content Area */
+.tabcontent {
+  display: none;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-top: none;
+  animation: fadeEffect 0.5s;
+  background: #ffffff;
+  border-radius: 0 0 8px 8px;
+}
+
+/* Fade in effect for tab content */
+@keyframes fadeEffect {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Optional: Style tables within tab content to match your design */
+.tabcontent table {
+  margin-top: 0;
+}
+
+/* Side Info Container */
+.side-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* Base Styles for Side Cards */
+.side-card {
+  background: #f1f2f6;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+  flex: 1;
+  min-width: 280px;
+  transition: 0.3s;
+  text-align: center;
+}
+.side-card:hover {
+  box-shadow: 4px 4px 15px rgba(0,0,0,0.2);
+}
+
+/* Earnings Card Specific Styles */
+.earnings-card h3 {
+  margin-bottom: 15px;
+  color: #333;
+  font-weight: 600;
+}
+.earnings-details p {
+  font-size: 14px;
+  color: #666;
+  margin: 8px 0;
+}
+.highlight {
+  color: #4caf50;
+  font-weight: bold;
+}
+
+/* Progress Bar Styles */
+.progress-bar {
+  background-color: #e0e0e0;
+  border-radius: 6px;
+  height: 8px;
+  margin: 15px 0;
+  overflow: hidden;
+  position: relative;
+}
+.progress {
+  background-color: #4caf50;
+  height: 100%;
+  border-radius: 6px;
+  animation: progress-animation 1.5s ease-in-out;
+}
+@keyframes progress-animation {
+  from { width: 0; }
+  to { width: 100%; }
+}

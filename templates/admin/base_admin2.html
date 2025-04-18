@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/admin2.css') }}" />
+    <!-- Placeholder for additional CSS from child templates -->
+    {% block css %}{% endblock css %}
+    <style>
+        /* Placeholder Scroller Styles */
+        .search-placeholder-wrapper {
+            height: 1.5rem;
+            overflow: hidden;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            width: 100%;
+            color: var(--text-color);
+            font-size: 14px;
+        }
+
+        .search-placeholder-static {
+            white-space: nowrap;
+        }
+
+        .search-placeholder-scroller {
+            display: block;
+            animation: scroll-up-placeholder 27s linear infinite;
+            margin-left: 5px;
+            will-change: transform;
+        }
+
+        .search-placeholder-scroller span {
+            display: block;
+            height: 1.5rem;
+            line-height: 1.5rem;
+            text-align: left;
+        }
+
+        @keyframes scroll-up-placeholder {
+            0% {
+                transform: translateY(0.75rem);
+            }
+
+            11.11% {
+                transform: translateY(0.75rem);
+            }
+
+            12.11% {
+                transform: translateY(-0.75rem);
+            }
+
+            22.22% {
+                transform: translateY(-0.75rem);
+            }
+
+            23.22% {
+                transform: translateY(-2.25rem);
+            }
+
+            33.33% {
+                transform: translateY(-2.25rem);
+            }
+
+            34.33% {
+                transform: translateY(-3.75rem);
+            }
+
+            44.44% {
+                transform: translateY(-3.75rem);
+            }
+
+            45.44% {
+                transform: translateY(-5.25rem);
+            }
+
+            55.55% {
+                transform: translateY(-5.25rem);
+            }
+
+            56.55% {
+                transform: translateY(-6.75rem);
+            }
+
+            66.66% {
+                transform: translateY(-6.75rem);
+            }
+
+            67.66% {
+                transform: translateY(-8.25rem);
+            }
+
+            77.77% {
+                transform: translateY(-8.25rem);
+            }
+
+            78.77% {
+                transform: translateY(-9.75rem);
+            }
+
+            88.88% {
+                transform: translateY(-9.75rem);
+            }
+
+            89.88% {
+                transform: translateY(-11.25rem);
+            }
+
+            100% {
+                transform: translateY(-11.25rem);
+            }
+        }
+
+        .search-input::placeholder {
+            color: transparent;
+        }
+
+        .search-form {
+            position: relative;
+        }
+
+        .search-placeholder-wrapper {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        .search-input:focus+.search-placeholder-wrapper,
+        .search-input:not(:placeholder-shown)+.search-placeholder-wrapper {
+            display: none;
+        }
+    </style>
+    <!-- Dynamic title block -->
+    <title>{% block title %}HIFI Delivery Eats - Admin{% endblock title %}</title>
+</head>
+
+<body>
+    <a href="#" class="scrolltop" id="scroll-top">
+        <i class="bx bx-chevron-up scrolltop__icon"></i>
+    </a>
+
+    <!-- Fixed Navbar Block -->
+    {% block navbar %}
+    <header class="l-header" id="header">
+        <nav class="nav bd-container">
+            <a href="#" class="nav__logo">HIFI Delivery Eats</a>
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <li class="nav__item">
+                        <form class="search-form">
+                            <input type="text" class="search-input" placeholder=" " aria-label="Search" />
+                            <div class="search-placeholder-wrapper">
+                                <span class="search-placeholder-static">Search for</span>
+                                <div class="search-placeholder-scroller" id="placeholder-scroller">
+                                    <!-- Items will be dynamically added via JavaScript -->
+                                </div>
+                            </div>
+                            <button type="submit" class="search-button">
+                                <i class="bx bx-search"></i>
+                            </button>
+                        </form>
+                    </li>
+                    <li class="nav__item">
+                        <a href="{{ url_for('admin2') }}" class="nav__link active-link">Home</a>
+                    </li>
+                    <li class="nav__item nav__dropdown">
+                        <a href="#" class="nav__link nav__menu-link">Menu <i class="bx bx-chevron-down"></i></a>
+                        <div class="nav__dropdown-content">
+                            <a href="{{ url_for('admin2_menu') }}">Add Menu</a>
+                            <a href="{{ url_for('admin2_show_menu') }}">Show Menu</a>
+                        </div>
+                    </li>
+                    <li class="nav__item">
+                        <a href="{{ url_for('admin2_dashboard') }}" class="nav__link">Dashboard</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#about" class="nav__link">About</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#contact" class="nav__link">Contact Us</a>
+                    </li>
+                    <li class="nav__item">
+                        <!-- <a href="#contact" class="nav__link">Sign</a> -->
+                        <a href="{{ url_for('employee_logout') }}">Logout</a>
+                    </li>
+                    <li class="nav__item">
+                        <i class="bx bx-moon change-theme" id="theme-button"></i>
+                    </li>
+                </ul>
+            </div>
+            <div class="nav__toggle" id="nav-toggle">
+                <i class="bx bx-menu"></i>
+            </div>
+        </nav>
+    </header>
+    {% endblock navbar %}
+
+    <!-- Main Content Block -->
+    <main class="l-main">
+        {% block content %}
+        <!-- Default content if not overridden -->
+        <section class="home" id="home">
+            <div class="home__container bd-container bd-grid">
+                <div class="home__data">
+                  <h1 class="home__title">HIFI Delivery Eats</h1>
+                  <div class="subtitle-wrapper">
+                    <div class="subtitle-scroller">
+                      <h3 class="home__subtitle">Savor the Finest Dishes</h3>
+                      <h3 class="home__subtitle">🍗 Delivered to Your <span style="color: green;">Door!</span></h3>
+                      <h3 class="home__subtitle">Order Fresh Meals ⏰ <span style="color: green;">Today!</span></h3>
+                      <h3 class="home__subtitle">Fast Delivery 🚚 at Your <span style="color: green;">Doorstep!</span></h3>
+                      <h3 class="home__subtitle">Savor the Finest Dishes</h3>
+                      <h3 class="home__subtitle">🍗 Delivered to Your <span style="color: green;">Door!</span></h3>
+                      <h3 class="home__subtitle">Order Fresh Meals ⏰ <span style="color: green;">Today!</span></h3>
+                      <h3 class="home__subtitle">Fast Delivery 🚚 at Your <span style="color: green;">Doorstep!</span></h3><br/>
+                    </div>
+                  </div>
+                  <a href="{{ url_for('show_menu') }}" class="button">Explore Our Menu</a>
+                  <div class="delivered-meals">
+                    <p class="delivered-text" id="dynamic-text">
+                      <span>1,000+</span> meals delivered last week!
+                    </p>
+                  </div>
+                </div>
+              <img
+                src="{{ url_for('static', filename='images/home.png') }}"
+                alt="Home Image"
+                class="home__img"
+                onerror="this.src='https://via.placeholder.com/150?text=Home+Image+Not+Found';"
+              />
+            </div>
+          </section>
+
+        <section class="menu section bd-container" id="menu">
+            <span class="section-subtitle">Our Specialties</span>
+            <h2 class="section-title">Featured Dishes</h2>
+            <div class="menu__container bd-grid">
+                <!-- Salads Category -->
+                <div class="menu__content" data-category="salads">
+                    <img src="{{ url_for('static', filename='/images/Barbecue Salad.jpg') }}" alt="Barbecue Salad"
+                        class="menu__img" onerror="this.src='https://via.placeholder.com/150?text=Image+Not+Found';" />
+                    <h3 class="menu__name">Barbecue Salad</h3>
+                    <span class="menu__category">Salads</span>
+                </div>
+                <!-- Seafood Category -->
+                <div class="menu__content" data-category="seafood">
+                    <img src="{{ url_for('static', filename='images/Fish Fillet.jpg') }}" alt="Fish Fillet"
+                        class="menu__img" onerror="this.src='https://via.placeholder.com/150?text=Image+Not+Found';" />
+                    <h3 class="menu__name">Fish Fillet</h3>
+                    <span class="menu__category">Seafood</span>
+                </div>
+                <!-- Meats Category -->
+                <div class="menu__content" data-category="meats">
+                    <img src="{{ url_for('static', filename='images/Grilled Steak.jpg') }}" alt="Grilled Steak"
+                        class="menu__img" onerror="this.src='https://via.placeholder.com/150?text=Image+Not+Found';" />
+                    <h3 class="menu__name">Grilled Steak</h3>
+                    <span class="menu__category">Meats</span>
+                </div>
+                <!-- Indian Category -->
+                <div class="menu__content" data-category="indian">
+                    <img src="{{ url_for('static', filename='images/Hyderabadi Biryani.jpg') }}"
+                        alt="Hyderabadi Biryani" class="menu__img"
+                        onerror="this.src='https://via.placeholder.com/150?text=Image+Not+Found';" />
+                    <h3 class="menu__name">Hyderabadi Biryani</h3>
+                    <span class="menu__category">Indian</span>
+                </div>
+                <!-- Fast Food Category -->
+                <div class="menu__content" data-category="fast-food">
+                    <img src="{{ url_for('static', filename='images/Burger.jpg') }}" alt="Burger" class="menu__img"
+                        onerror="this.src='https://via.placeholder.com/150?text=Image+Not+Found';" />
+                    <h3 class="menu__name">Burger</h3>
+                    <span class="menu__category">Fast Food</span>
+                </div>
+                <!-- Breakfast Category -->
+                <div class="menu__content" data-category="breakfast">
+                    <img src="{{ url_for('static', filename='images/Breakfast Platter.jpg') }}" alt="Breakfast Platter"
+                        class="menu__img" onerror="this.src='https://via.placeholder.com/150?text=Image+Not+Found';" />
+                    <h3 class="menu__name">Breakfast Platter</h3>
+                    <span class="menu__category">Breakfast</span>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 20px">
+                <div class="show1">
+                    <a href="{{ url_for('show_menu') }}" class="button" style="background-color: green">Discover Full
+                        Menu</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="about section bd-container" id="about">
+            <div class="about__container bd-grid">
+                <div class="about__data">
+                    <div class="about_info">
+                        <span class="section-subtitle_about__initial">About us</span>
+                    </div>
+                    <h2 class="section-title about__initial">
+                        Crafting Culinary Excellence
+                    </h2>
+                    <p class="about__description">
+                        Indulge in the finest cuisine with top-notch service at HIFI
+                        Delivery Eats. Visit us for an unforgettable dining experience.
+                    </p>
+                    <div class="about_1"><a href="#" class="button">Our Story</a></div>
+                </div>
+                <img src="{{ url_for('static', filename='imgs/about.jpg') }}" alt="About Image" class="about__img" />
+            </div>
+        </section>
+        {% endblock content %}
+    </main>
+
+    {%block content2 %}{% endblock content2 %}
+
+    <!-- Footer Block (optional override) -->
+    <footer class="footer section bd-container">
+        {% block footer %}
+        <div class="footer__container bd-grid">
+            <div class="footer__content">
+                <a href="#" class="footer__logo">HIFI Delivery</a>
+                <span class="footer__description">Restaurant</span>
+                <div>
+                    <a href="#" class="footer__social"><i class="bx bxl-facebook"></i></a>
+                    <a href="#" class="footer__social"><i class="bx bxl-instagram"></i></a>
+                    <a href="#" class="footer__social"><i class="bx bxl-twitter"></i></a>
+                </div>
+            </div>
+            <div class="footer__content">
+                <h3 class="footer__title">Services</h3>
+                <ul>
+                    <li><a href="#" class="footer__link">Delivery</a></li>
+                    <li><a href="#" class="footer__link">Pricing</a></li>
+                    <li><a href="#" class="footer__link">Fast Food</a></li>
+                    <li><a href="#" class="footer__link">Reserve Your Spot</a></li>
+                </ul>
+            </div>
+            <div class="footer__content">
+                <h3 class="footer__title">Information</h3>
+                <ul>
+                    <li><a href="#" class="footer__link">Event</a></li>
+                    <li><a href="#" class="footer__link">Contact Us</a></li>
+                    <li><a href="#" class="footer__link">Privacy Policy</a></li>
+                    <li><a href="#" class="footer__link">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer__content">
+                <h3 class="footer__title">Address</h3>
+                <ul>
+                    <li>Hyderabad</li>
+                    <li>Infosys</li>
+                    <li>999 - 888 - 777</li>
+                    <li>HIFI-delivery@email.com</li>
+                </ul>
+            </div>
+        </div>
+        {% endblock footer %}
+        <p class="footer__copy">
+            © 2025 Infosys Springboard Internship. All rights reserved
+        </p>
+    </footer>
+    
+
+    <!-- Common JavaScript -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const scroller = document.getElementById("placeholder-scroller");
+            if (scroller) {
+                const subcategories = [
+                    "Starter",
+                    "Biryani",
+                    "Soups",
+                    "Salads",
+                    "Breads",
+                    "Main Course",
+                    "Beverages",
+                    "Icecreams",
+                    "Breakfast",
+                ];
+                const items = [...subcategories, ...subcategories];
+                items.forEach((subcategory) => {
+                    const span = document.createElement("span");
+                    span.textContent = subcategory;
+                    scroller.appendChild(span);
+                });
+            }
+        });
+    </script>
+
+    <!-- External Scripts -->
+    <script src="https://unpkg.com/scrollreveal" defer></script>
+    <script src="{{ url_for('static', filename='js/admin/admin2.js') }}" defer></script>
+    <!-- Block for additional scripts from child templates -->
+    {% block scripts %}{% endblock scripts %}
+</body>
+
+</html>

@@ -1,0 +1,1042 @@
+{% extends "index.html" %}
+{% block title %} Food Order Tracking - HIFI Delivery Eats {%endblock title %}
+{% block css %} {{super()}}
+<!-- Bootstrap CSS -->
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"> -->
+<!-- Boxicons for icons -->
+<link href="https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css" rel="stylesheet" />
+<!-- Font Awesome for icons (CSS version) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+<!-- Google Fonts for Poppins -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        display: flex;
+        flex-direction: column;
+        /* Stack content and footer vertically */
+        justify-content: space-between;
+        /* Push footer to bottom */
+        align-items: center;
+        overflow-y: auto;
+        background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        transition: background 0.3s;
+    }
+
+    /* Rest of the existing styles */
+    .tracking-container {
+        max-width: 900px;
+        width: 100%;
+        margin: 80px 20px 20px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        animation: fadeIn 0.8s ease-out;
+        transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    .dark-theme .tracking-container {
+        background: #263a2e;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    .tracking-container h2 {
+        background: #4CAF50;
+        border-radius: 5px;
+        color: white;
+        padding: 20px;
+        text-align: center;
+        font-size: 28px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        position: relative;
+        transition: background 0.3s;
+    }
+
+    .dark-theme .tracking-container h2 {
+        background: #2e7d32;
+    }
+
+    .tracking-container h2::after {
+        content: '';
+        width: 60px;
+        height: 4px;
+        background: #fff;
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 2px;
+    }
+
+    .dark-theme .tracking-container h2::after {
+        background: #e0e0e0;
+    }
+
+    .split-section {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .order-details-table,
+    .agent-details {
+        background: #f1f8e9;
+        border-radius: 10px;
+        padding: 20px;
+        flex: 1;
+        min-width: 300px;
+        transition: background 0.3s, color 0.3s;
+    }
+
+    .dark-theme .order-details-table,
+    .dark-theme .agent-details {
+        background: #2a3d2f;
+        color: #a5d6a7;
+    }
+
+    .order-details-table {
+        flex: 3;
+        min-width: 100%;
+    }
+
+    .agent-details {
+        flex: 1;
+        min-width: 300px;
+    }
+
+    .order-details-table h3,
+    .agent-details h3 {
+        color: #2e7d32;
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        background: #4CAF50;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .dark-theme .order-details-table h3,
+    .dark-theme .agent-details h3 {
+        color: #a5d6a7;
+        background: #2e7d32;
+    }
+
+    .order-details-table h3::before {
+        content: '🍔';
+        margin-right: 8px;
+    }
+
+    .agent-details h3::before {
+        content: '🚴';
+    }
+
+    .order-details-table table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+
+    .order-details-table th {
+        background: #4CAF50;
+        border-radius: 2px;
+        color: white;
+        padding: 16px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .dark-theme .order-details-table th {
+        background: #2e7d32;
+    }
+
+    .order-details-table td {
+        padding: 16px;
+        border-bottom: 1px solid #ddd;
+        transition: border-color 0.3s;
+        font-size: 1rem;
+    }
+
+    .dark-theme .order-details-table td {
+        border-bottom: 1px solid #3d5a40;
+    }
+
+    .bill-summary p {
+        margin: 5px 0;
+        font-size: 1.1rem;
+        color: #2e7d32;
+    }
+
+    .dark-theme .bill-summary p {
+        color: #a5d6a7;
+    }
+
+    .bill-summary .summary-label {
+        font-weight: 600;
+    }
+
+    .bill-summary .total {
+        font-weight: 600;
+        color: #4CAF50;
+    }
+
+    .dark-theme .bill-summary .total {
+        color: #81c784;
+    }
+
+    .order-info {
+        padding: 20px;
+        background: #f1f8e9;
+        border-radius: 10px;
+        margin: 20px;
+        transition: background 0.3s, color 0.3s;
+    }
+
+    .dark-theme .order-info {
+        background: #2a3d2f;
+        color: #a5d6a7;
+    }
+
+    .order-info h3 {
+        color: #2e7d32;
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+    }
+
+    .dark-theme .order-info h3 {
+        color: #a5d6a7;
+    }
+
+    .order-info h3::before {
+        content: 'ℹ️';
+        margin-right: 8px;
+    }
+
+    .order-info p {
+        font-size: 1rem;
+        color: #2e7d32;
+        margin: 5px 0;
+    }
+
+    .dark-theme .order-info p {
+        color: #a5d6a7;
+    }
+
+    .order-info p strong {
+        font-weight: 600;
+    }
+
+    .badge {
+        font-size: 0.9rem;
+        padding: 5px 10px;
+        border-radius: 20px;
+    }
+
+    .bg-danger {
+        background: #f44336;
+        color: white;
+    }
+
+    .bg-success {
+        background: #4caf50;
+        color: white;
+    }
+
+    .bg-warning {
+        background: #ff9800;
+        color: white;
+    }
+
+    .bg-info {
+        background-color: cyan;
+        color: white;
+    }
+
+    /* Tracking Section */
+    .tracking-section {
+        padding: 20px;
+        background: #f1f8e9;
+        border-radius: 10px;
+        margin: 20px;
+        transition: background 0.3s, color 0.3s;
+    }
+
+    .dark-theme .tracking-section {
+        background: #2a3d2f;
+        color: #a5d6a7;
+    }
+
+    .tracking-section h3 {
+        color: #2e7d32;
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+    }
+
+    .dark-theme .tracking-section h3 {
+        color: #a5d6a7;
+    }
+
+    .tracking-section h3::before {
+        content: '🚚';
+        margin-right: 8px;
+    }
+
+    .status {
+        display: flex;
+        position: relative;
+        margin: 30px 0;
+        min-height: 60px;
+    }
+
+    .status::before {
+        content: '';
+        position: absolute;
+        top: 25px;
+        /* Centered with icons */
+        left: 5%;
+        /* Start at the first icon */
+        width: 95%;
+        /* Span from 5% to 95%, connecting all 4 points */
+        height: 3px;
+        background: #4CAF50;
+        z-index: 0;
+    }
+
+    .dark-theme .status::before {
+        background: #2e7d32;
+    }
+
+    .status div {
+        text-align: center;
+        position: absolute;
+        z-index: 2;
+    }
+
+    .status div:nth-child(1) {
+        left: 0%;
+        /* Start closer to the left edge */
+    }
+
+    .status div:nth-child(2) {
+        left: 35%;
+        /* Evenly spaced between 5% and 65% */
+    }
+
+    .status div:nth-child(3) {
+        left: 65%;
+        /* Middle-right */
+    }
+
+    .status div:nth-child(4) {
+        left: 95%;
+        /* End near the right edge */
+    }
+
+    .status .icon {
+        font-size: 1.5rem;
+        color: #ccc;
+        background: #fff;
+        border-radius: 50%;
+        padding: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .dark-theme .status .icon {
+        background: #2a3d2f;
+    }
+
+    .status .icon.active {
+        color: #4CAF50;
+        transform: scale(1.2);
+    }
+
+    .dark-theme .status .icon.active {
+        color: #81c784;
+    }
+
+    .status div p {
+        margin: 5px 0 0;
+        font-size: 0.85rem;
+        color: #777;
+    }
+
+    .dark-theme .status div p {
+        color: #a5d6a7;
+    }
+
+    #delivery-scooter {
+        position: absolute;
+        top: -7.5px;
+        left: 5%;
+        /* Adjusted to match the new starting position */
+        width: 30px;
+        height: 30px;
+        z-index: 2;
+    }
+
+    #smoke-icon {
+        position: absolute;
+        top: -2px;
+        left: 5%;
+        /* Adjusted to match the new starting position */
+        width: 30px;
+        height: 30px;
+        z-index: 1;
+        display: none;
+    }
+
+    #order-message {
+        display: none;
+        font-size: 1.1rem;
+        color: #4CAF50;
+        margin: 20px 0;
+        font-weight: 500;
+        text-align: center;
+        animation: fadeIn 0.5s ease;
+    }
+
+    .dark-theme #order-message {
+        color: #81c784;
+    }
+
+    #transition-message {
+        font-size: 1rem;
+        color: #4CAF50;
+        margin: 10px 0;
+        font-weight: 500;
+        text-align: center;
+        animation: fadeIn 0.5s ease;
+    }
+
+    .dark-theme #transition-message {
+        color: #81c784;
+    }
+
+    #feedback-section {
+        margin: 20px;
+        text-align: center;
+        display: none;
+        padding: 20px;
+        background: #f1f8e9;
+        border-radius: 10px;
+        transition: background 0.3s, color 0.3s;
+    }
+
+    .dark-theme #feedback-section {
+        background: #2a3d2f;
+        color: #a5d6a7;
+    }
+
+    #feedback-section h5 {
+        color: #2e7d32;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .dark-theme #feedback-section h5 {
+        color: #81c784;
+    }
+
+    #feedback-section h5::before {
+        content: '⭐';
+        margin-right: 8px;
+    }
+
+    .star-rating {
+        font-size: 1.5rem;
+        color: #ccc;
+        cursor: pointer;
+        margin: 10px 0;
+    }
+
+    .dark-theme .star-rating {
+        color: #2a3d2f;
+    }
+
+    .star-rating .fas {
+        transition: color 0.3s;
+        margin: 0 5px;
+    }
+
+    .star-rating .fas.active {
+        color: #4CAF50;
+    }
+
+    .dark-theme .star-rating .fas.active {
+        color: #81c784;
+    }
+
+    .btn-custom {
+        background: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .dark-theme .btn-custom {
+        background: #2e7d32;
+    }
+
+    .btn-custom:hover {
+        background: #45a049;
+    }
+
+    .dark-theme .btn-custom:hover {
+        background: #1b5e20;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 600px) {
+        .tracking-container {
+            margin: 80px 10px 20px;
+        }
+
+        .split-section {
+            flex-direction: column;
+        }
+
+        .status div p {
+            font-size: 0.75rem;
+        }
+    }
+
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        position: relative;
+        animation: slideIn 0.3s ease-out;
+    }
+
+    .dark-theme .modal-content {
+        background: #263a2e;
+        color: #a5d6a7;
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        cursor: pointer;
+        color: #777;
+    }
+
+    .dark-theme .modal-close {
+        color: #a5d6a7;
+    }
+
+    .modal-close:hover {
+        color: #4CAF50;
+    }
+
+    .dark-theme .modal-close:hover {
+        color: #81c784;
+    }
+
+    .modal-content h3 {
+        color: #4CAF50;
+        margin-bottom: 15px;
+    }
+
+    .dark-theme .modal-content h3 {
+        color: #81c784;
+    }
+
+    .modal-content p {
+        color: #2e7d32;
+        margin-bottom: 20px;
+    }
+
+    .dark-theme .modal-content p {
+        color: #a5d6a7;
+    }
+
+    .modal-ok {
+        background: #4CAF50;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .dark-theme .modal-ok {
+        background: #2e7d32;
+    }
+
+    .modal-ok:hover {
+        background: #45a049;
+    }
+
+    .dark-theme .modal-ok:hover {
+        background: #1b5e20;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock css %}
+
+{%block nav_bar%}{{super()}}{%endblock nav_bar%}
+
+{% block content2 %}
+<!-- Everything below remains unchanged -->
+<div class="tracking-container">
+    <h2>Food Order Tracking</h2>
+
+    <div class="split-section">
+        <div class="order-details-table">
+            <h3>Your Order</h3>
+            <table id="order-items-table">
+                <tr>
+                    <th>Item ID</th>
+                    <th>Item Name</th>
+                    <th>Quantity</th>
+                    <th>Discount</th>
+                    <th>Amount</th>
+                </tr>
+            </table>
+            <div class="bill-summary" id="bill-summary"></div>
+        </div>
+
+        <div class="agent-details">
+            <h3>Delivery Agent</h3>
+            <p><strong>Name:</strong> <span id="agent-name"></span></p>
+            <p><strong>Contact:</strong> <span id="agent-contact"></span></p>
+            <p><strong>Delivery Area:</strong> <span id="agent-area"></span></p>
+        </div>
+    </div>
+
+    <div class="order-info">
+        <h3>Order Information</h3>
+        <p><strong>Order ID:</strong> <span id="order-id"></span></p>
+        <p><strong>Ordered At:</strong> <span id="ordered-at"></span></p>
+        <p><strong>Payment Mode:</strong> <span id="payment-mode"></span></p>
+        <p><strong>Delivery Address:</strong> <span id="delivery-address"></span></p>
+        <p><strong>Tracking ID:</strong> <span id="tracking-id" class="badge bg-danger"></span></p>
+        <p><strong>Order Status:</strong> <span id="order-status" class="badge bg-success">Order Confirmed</span></p>
+        <p><strong>Estimated Arrival:</strong> <span id="arrival-time"></span></p>
+        <button class="btn-custom" onclick="window.print()">Print Bill</button>
+    </div>
+
+    <div class="tracking-section">
+        <h3>Track Your Order</h3>
+        <div class="status">
+            <div><span id="icon-accepted" class="icon active"><i class="fas fa-check"></i></span>
+                <p>Order Accepted</p>
+            </div>
+            <div><span id="icon-picked" class="icon"><i class="fas fa-shipping-fast"></i></span>
+                <p>Picked Up</p>
+            </div>
+            <div><span id="icon-out-for-delivery" class="icon"><i class="fas fa-truck"></i></span>
+                <p>Out for Delivery</p>
+            </div>
+            <div><span id="icon-delivered" class="icon"><i class="fas fa-box-open"></i></span>
+                <p>Delivered</p>
+            </div>
+            <img id="delivery-scooter"
+                src="{{ url_for('static', filename='images/fast_shipping_delivery_agent_img.png') }}"
+                alt="Delivery Scooter">
+            <img id="smoke-icon" src="{{ url_for('static', filename='images/smoke-30.png') }}" alt="Smoke Icon">
+        </div>
+        <p id="order-message">Your order is being processed! 🍕</p>
+        <p id="transition-message">Order Accepted</p>
+    </div>
+
+    <div id="feedback-section">
+        <h5>Rate Your Experience</h5>
+        <div class="star-rating" id="star-rating">
+            <i class="fas fa-star" data-value="1"></i>
+            <i class="fas fa-star" data-value="2"></i>
+            <i class="fas fa-star" data-value="3"></i>
+            <i class="fas fa-star" data-value="4"></i>
+            <i class="fas fa-star" data-value="5"></i>
+        </div>
+        <textarea id="feedback-text" rows="4" placeholder="Share your feedback about the delivery..."
+            style="width: 100%; margin-top: 10px; padding: 10px; border-radius: 5px; border: 1px solid #ccc;"></textarea>
+        <button class="btn-custom" onclick="submitFeedback()">Submit Feedback</button>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div id="feedback-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h3>Thank You!</h3>
+            <p>Your feedback has been submitted successfully.</p>
+            <button class="btn-custom modal-ok" onclick="closeModal()">OK</button>
+        </div>
+    </div>
+</div>
+{% endblock content2 %}
+{% block scripts %}
+<script>
+    // Pass Flask data to JavaScript
+    const orderData = {{ order_json | safe }};
+    const cartItems = {{ cart_items_json | safe }} || [];
+    const agentData = {{ agent_json | safe }};
+    let hasFeedback = {{ has_feedback | tojson }};  // Pass has_feedback from Flask
+    const TOTAL_DELIVERY_TIME_MINUTES = 15;
+    const TOTAL_DELIVERY_TIME_SECONDS = TOTAL_DELIVERY_TIME_MINUTES * 60;
+    let estimatedSeconds = TOTAL_DELIVERY_TIME_SECONDS;
+    let timerInterval;
+    let selectedRating = 0;
+    let stars;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        console.log("DOMContentLoaded fired");
+        console.log("Has feedback initially:", hasFeedback); // Debug
+
+        const themeButton = document.getElementById("theme-button");
+        const body = document.body;
+        const navToggle = document.getElementById("nav-toggle");
+        const navMenu = document.getElementById("nav-menu");
+
+        body.classList.add("dark-theme");
+        themeButton.addEventListener("click", () => {
+            body.classList.toggle("dark-theme");
+            themeButton.classList.toggle("bx-moon");
+            themeButton.classList.toggle("bx-sun");
+            localStorage.setItem("dark-mode", body.classList.contains("dark-theme"));
+        });
+
+        const savedTheme = localStorage.getItem("dark-mode");
+        if (savedTheme === "true") {
+            body.classList.add("dark-theme");
+            themeButton.classList.remove("bx-moon");
+            themeButton.classList.add("bx-sun");
+        } else {
+            body.classList.remove("dark-theme");
+            themeButton.classList.remove("bx-sun");
+            themeButton.classList.add("bx-moon");
+        }
+
+        const orderStatusElement = document.getElementById("order-status");
+        orderStatusElement.innerText = orderData.delivery_status || "Accepted";
+        orderStatusElement.className = getStatusBadgeClass(orderData.delivery_status || "Accepted");
+
+        document.getElementById("order-id").innerText = orderData.order_id || "N/A";
+        document.getElementById("tracking-id").innerText = orderData.tracking_id || Math.floor(10000000 + Math.random() * 90000000);
+        document.getElementById("ordered-at").innerText = orderData.ordered_at || new Date().toLocaleString();
+        document.getElementById("payment-mode").innerText = "Cash on Delivery";
+        document.getElementById("delivery-address").innerText = `${orderData.delivery_details.street}, ${orderData.delivery_details.city}, ${orderData.delivery_details.state} - ${orderData.delivery_details.pincode}`;
+        document.getElementById("agent-name").innerText = agentData.name || "N/A";
+        document.getElementById("agent-contact").innerText = agentData.contact || "N/A";
+        document.getElementById("agent-area").innerText = agentData.delivery_area || "N/A";
+
+        const orderItemsTable = document.getElementById("order-items-table");
+        const billSummary = document.getElementById("bill-summary");
+
+        if (cartItems.length > 0) {
+            orderItemsTable.innerHTML = '<tr><th>Item ID</th><th>Item Name</th><th>Quantity</th><th>Discount</th><th>Amount</th></tr>';
+            let subtotal = 0;
+
+            cartItems.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                const discountAmount = (itemTotal * (item.discount_percentage || 0)) / 100;
+                const amount = itemTotal - discountAmount;
+                subtotal += amount;
+
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${item.menu_item_id || "N/A"}</td>
+                    <td>${item.name || "Unknown Item"}</td>
+                    <td>${item.quantity || 1}</td>
+                    <td>₹${discountAmount.toFixed(2)} (${item.discount_percentage || 0}%)</td>
+                    <td>₹${amount.toFixed(2)}</td>
+                `;
+                orderItemsTable.appendChild(row);
+            });
+
+            const tax = orderData.tax || (subtotal * 0.18).toFixed(2);
+            const deliveryCharge = orderData.delivery_charge || 50.00;
+            const total = orderData.total || (subtotal + parseFloat(tax) + deliveryCharge).toFixed(2);
+
+            billSummary.innerHTML = `
+                <p><span class="summary-label">Subtotal:</span> ₹${subtotal.toFixed(2)}</p>
+                <p><span class="summary-label">Tax (18%):</span> ₹${tax.toFixed(2)}</p>
+                <p><span class="summary-label">Delivery Charge:</span> ₹${deliveryCharge.toFixed(2)}</p>
+                <p class="total"><span class="summary-label">Total:</span> ₹${total}</p>
+            `;
+        } else {
+            orderItemsTable.innerHTML = '<tr><td colspan="5">No items found for this order.</td></tr>';
+            billSummary.innerHTML = `
+                <p><span class="summary-label">Subtotal:</span> ₹0.00</p>
+                <p><span class="summary-label">Tax (18%):</span> ₹0.00</p>
+                <p><span class="summary-label">Delivery Charge:</span> ₹0.00</p>
+                <p class="total"><span class="summary-label">Total:</span> ₹0.00</p>
+            `;
+        }
+
+        startEstimatedTime();
+        startDeliveryTracking();
+
+        const closeModalBtn = document.querySelector(".modal-close");
+        closeModalBtn.addEventListener("click", closeModal);
+        
+        stars = document.querySelectorAll(".star-rating .fas");
+        console.log("Stars found:", stars.length);
+        if (stars.length === 0) {
+            console.error("No star elements found.");
+        }
+
+        stars.forEach((star, index) => {
+            console.log(`Adding listener to star ${index + 1}`);
+            star.addEventListener("click", function () {
+                selectedRating = parseInt(this.getAttribute("data-value"));
+                console.log("Star clicked, rating set to:", selectedRating);
+                stars.forEach(s => s.classList.remove("active"));
+                for (let i = 0; i < selectedRating; i++) {
+                    stars[i].classList.add("active");
+                }
+            });
+        });
+
+        navToggle.addEventListener("click", () => {
+            navMenu.classList.toggle("show-menu");
+        });
+    });
+
+    function startEstimatedTime() {
+        const arrivalTimeElement = document.getElementById("arrival-time");
+        const now = new Date();
+        const currentTimeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Kolkata' });
+        const estimatedDelivery = new Date(now.getTime() + TOTAL_DELIVERY_TIME_SECONDS * 1000);
+        const deliveryTimeStr = estimatedDelivery.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Kolkata' });
+        const deliveryDateStr = estimatedDelivery.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-');
+
+        arrivalTimeElement.innerText = `${Math.floor(TOTAL_DELIVERY_TIME_SECONDS / 60)}min:${(TOTAL_DELIVERY_TIME_SECONDS % 60).toString().padStart(2, '0')}sec | ${deliveryDateStr} [${currentTimeStr} - ${deliveryTimeStr} IST]`;
+
+        /*
+        timerInterval = setInterval(() => {
+            estimatedSeconds--;
+            if (estimatedSeconds < 0) {
+                clearInterval(timerInterval);
+                arrivalTimeElement.innerText = `0min:00sec | ${deliveryDateStr} [Delivered]`;
+                return;
+            }
+
+            const minutesLeft = Math.floor(estimatedSeconds / 60);
+            const secondsLeft = estimatedSeconds % 60;
+            const currentTime = new Date(now.getTime() + (TOTAL_DELIVERY_TIME_SECONDS - estimatedSeconds) * 1000);
+            const currentTimeStr = currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Kolkata' });
+
+            arrivalTimeElement.innerText = `${minutesLeft}min:${secondsLeft.toString().padStart(2, '0')}sec | ${deliveryDateStr} [${currentTimeStr} - ${deliveryTimeStr} IST]`;
+        }, 1000);
+        */
+    }
+
+    function getStatusBadgeClass(status) {
+        switch (status) {
+            case "Accepted": return "badge bg-success";
+            case "Picked Up": return "badge bg-warning";
+            case "Out for Delivery": return "badge bg-info";
+            case "Delivered": return "badge bg-success";
+            default: return "badge bg-success";
+        }
+    }
+
+    function startDeliveryTracking() {
+        const orderStatusElement = document.getElementById("order-status");
+        const transitionMessageElement = document.getElementById("transition-message");
+        const scooter = document.getElementById("delivery-scooter");
+        const smokeIcon = document.getElementById("smoke-icon");
+        const icons = {
+            accepted: document.getElementById("icon-accepted"),
+            picked: document.getElementById("icon-picked"),
+            out_for_delivery: document.getElementById("icon-out-for-delivery"),
+            delivered: document.getElementById("icon-delivered")
+        };
+
+        const positions = {
+            accepted: 5,
+            picked: 35,
+            outForDelivery: 65,
+            delivered: 95
+        };
+
+        const animationDuration = 2000;
+        let currentStatus = orderData.delivery_status || "Accepted";
+        let feedbackSubmitted = hasFeedback; // Track if feedback was submitted
+
+        updateStatus(currentStatus);
+
+        setInterval(() => {
+            fetch(`/api/order_status/${orderData.order_id}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.delivery_status && data.delivery_status !== currentStatus) {
+                        currentStatus = data.delivery_status;
+                        animateScooter(currentStatus);
+                    }
+                })
+                .catch(error => console.error('Error fetching status:', error));
+        }, 5000);
+
+        function updateStatus(status) {
+            orderStatusElement.innerText = status;
+            orderStatusElement.className = getStatusBadgeClass(status);
+            transitionMessageElement.innerText = status;
+            document.getElementById("order-message").style.display = status === "Delivered" ? "none" : "block";
+            // Only show feedback section if Delivered and no feedback yet
+            document.getElementById("feedback-section").style.display = (status === "Delivered" && !feedbackSubmitted) ? "block" : "none";
+
+            icons.accepted.classList.toggle("active", status === "Accepted" || status === "Picked Up" || status === "Out for Delivery" || status === "Delivered");
+            icons.picked.classList.toggle("active", status === "Picked Up" || status === "Out for Delivery" || status === "Delivered");
+            icons.out_for_delivery.classList.toggle("active", status === "Out for Delivery" || status === "Delivered");
+            icons.delivered.classList.toggle("active", status === "Delivered");
+        }
+
+        function animateScooter(status) {
+            let targetPosition;
+            switch (status) {
+                case "Accepted": targetPosition = positions.accepted; break;
+                case "Picked Up": targetPosition = positions.picked; break;
+                case "Out for Delivery": targetPosition = positions.outForDelivery; break;
+                case "Delivered": targetPosition = positions.delivered; break;
+                default: targetPosition = positions.accepted;
+            }
+
+            updateStatus(status);
+
+            scooter.style.transition = `left ${animationDuration}ms ease-in-out`;
+            scooter.style.left = `${targetPosition}%`;
+
+            smokeIcon.style.left = `${targetPosition}%`;
+            smokeIcon.style.display = "block";
+            setTimeout(() => smokeIcon.style.display = "none", 1000);
+        }
+    }
+
+    function showModal() {
+        const modal = document.getElementById("feedback-modal");
+        modal.style.display = "flex";
+    }
+
+    function closeModal() {
+        const modal = document.getElementById("feedback-modal");
+        modal.style.display = "none";
+    }
+    
+    function submitFeedback() {
+        if (selectedRating === 0) {
+            alert("Please select a rating before submitting!");
+            return;
+        }
+
+        const feedbackText = document.getElementById("feedback-text").value.trim();
+        const feedback = {
+            order_id: orderData.order_id,
+            rating: selectedRating,
+            feedback: feedbackText || null
+        };
+
+        console.log("Submitting feedback:", feedback);
+
+        fetch('/api/delivery_feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(feedback)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw new Error(err.error); });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.ok) {
+                    showModal();
+                    /*alert("Thank you for your feedback!");*/
+                    document.getElementById("feedback-section").style.display = "none";
+                    document.getElementById("feedback-text").value = "";
+                    selectedRating = 0;
+                    stars.forEach(s => s.classList.remove("active"));
+                    hasFeedback = true; // Update local state to hide feedback section
+                }
+            })
+            .catch(error => {
+                console.error("Error submitting feedback:", error);
+                alert("Failed to submit feedback: " + error.message);
+            });
+    }
+</script>
+{% endblock scripts %}

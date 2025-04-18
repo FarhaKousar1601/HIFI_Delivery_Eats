@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Delivery Partners SignUp</title>
+    <style>
+      /* Base Styles */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        transition: all 0.3s ease;
+      }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        /* Replace with your background image URL */
+        background: url("/img/delivery_agent.jpg") no-repeat center center fixed;
+        background-size: cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        position: relative;
+        overflow-x: hidden;
+      }
+      /* Puzzle Pattern Background (Optional Overlay) */
+      .puzzle-pattern {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        opacity: 0.4;
+        background-image: linear-gradient(
+            rgba(0, 100, 0, 0.05) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(0, 100, 0, 0.05) 1px, transparent 1px);
+        background-size: 20px 20px;
+        animation: patternMove 20s linear infinite;
+      }
+      @keyframes patternMove {
+        0% {
+          background-position: 0 0;
+        }
+        100% {
+          background-position: 40px 40px;
+        }
+      }
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        padding: 20px;
+      }
+      .login-box {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 450px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .login-box::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, #006400, #00a000, #006400);
+        z-index: 1;
+      }
+      /* Typography */
+      h2 {
+        color: #006400;
+        font-size: 28px;
+        margin-bottom: 5px;
+        position: relative;
+        display: inline-block;
+      }
+      h2::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 50px;
+        height: 3px;
+        background-color: #006400;
+        border-radius: 3px;
+      }
+      h3 {
+        color: #006400;
+        font-size: 20px;
+        margin-bottom: 20px;
+      }
+      p {
+        color: #666;
+        font-size: 16px;
+        margin-bottom: 25px;
+      }
+      /* Progress Bar */
+      .progress-container {
+        margin-bottom: 25px;
+        position: relative;
+        height: 40px;
+      }
+      .progress-bar {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+        height: 4px;
+        background-color: #006400;
+        width: 0%;
+        transition: width 0.5s ease;
+        z-index: 1;
+      }
+      .step-circles {
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        z-index: 2;
+      }
+      .step {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: white;
+        border: 2px solid #ccc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #666;
+        position: relative;
+      }
+      .step.active {
+        border-color: #006400;
+        color: #006400;
+      }
+      .step.completed {
+        background-color: #006400;
+        border-color: #006400;
+        color: white;
+      }
+      /* Form Styles */
+      form {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+      }
+      .form-step {
+        transition: transform 0.5s ease, opacity 0.5s ease;
+      }
+      .hidden {
+        display: none;
+        opacity: 0;
+      }
+      .input-group {
+        margin-bottom: 20px;
+        text-align: left;
+        position: relative;
+      }
+      label {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #333;
+      }
+      .emoji {
+        font-size: 18px;
+        margin-right: 5px;
+        display: inline-block;
+        transform: translateY(2px);
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s;
+      }
+      input:focus,
+      select:focus {
+        border-color: #006400;
+        box-shadow: 0 0 0 2px rgba(0, 100, 0, 0.1);
+        outline: none;
+      }
+      input:hover,
+      select:hover {
+        border-color: #006400;
+      }
+      .validation-message {
+        display: block;
+        font-size: 12px;
+        margin-top: 5px;
+        min-height: 18px;
+      }
+      .error {
+        color: #e53935;
+      }
+      .success {
+        color: #43a047;
+      }
+      /* Password Strength Meter */
+      .password-strength {
+        margin-top: 8px;
+      }
+      .strength-meter {
+        height: 5px;
+        background-color: #eee;
+        border-radius: 3px;
+        margin-bottom: 5px;
+      }
+      .strength-meter-fill {
+        height: 100%;
+        border-radius: 3px;
+        width: 0%;
+        transition: width 0.3s, background-color 0.3s;
+      }
+      #password-strength-text {
+        font-size: 12px;
+        color: #666;
+      }
+      /* Buttons */
+      .button-group {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+      }
+      button {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.3s;
+      }
+      .next-btn,
+      .submit-btn {
+        background-color: #006400;
+        color: white;
+      }
+      .next-btn:hover,
+      .submit-btn:hover {
+        background-color: #004d00;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .prev-btn {
+        background-color: #f5f5f5;
+        color: #333;
+      }
+      .prev-btn:hover {
+        background-color: #e0e0e0;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      /* Success Animation */
+      #success-message {
+        text-align: center;
+        padding: 20px;
+      }
+      .success-animation {
+        margin: 20px auto;
+        width: 80px;
+        height: 80px;
+      }
+      .checkmark {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: block;
+        stroke-width: 2;
+        stroke: #006400;
+        stroke-miterlimit: 10;
+        box-shadow: 0 0 0 #006400;
+        animation: fill 0.4s ease-in-out 0.4s forwards,
+          scale 0.3s ease-in-out 0.9s both;
+      }
+      .checkmark-circle {
+        stroke-dasharray: 166;
+        stroke-dashoffset: 166;
+        stroke-width: 2;
+        stroke-miterlimit: 10;
+        stroke: #006400;
+        fill: none;
+        animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+      }
+      .checkmark-check {
+        transform-origin: 50% 50%;
+        stroke-dasharray: 48;
+        stroke-dashoffset: 48;
+        animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+      }
+      @keyframes stroke {
+        100% {
+          stroke-dashoffset: 0;
+        }
+      }
+      @keyframes scale {
+        0%,
+        100% {
+          transform: none;
+        }
+        50% {
+          transform: scale3d(1.1, 1.1, 1);
+        }
+      }
+      @keyframes fill {
+        100% {
+          box-shadow: inset 0 0 0 30px white;
+        }
+      }
+      /* Responsive Design */
+      @media (max-width: 480px) {
+        .login-box {
+          padding: 20px 15px;
+        }
+        h2 {
+          font-size: 24px;
+        }
+        h3 {
+          font-size: 18px;
+        }
+        .button-group {
+          flex-direction: column;
+          gap: 10px;
+        }
+        button {
+          width: 100%;
+        }
+        .prev-btn {
+          order: 2;
+        }
+        .next-btn,
+        .submit-btn {
+          order: 1;
+        }
+      }
+      .flashes {
+        list-style-type: none;
+        padding: 0;
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+      }
+      .flashes li {
+        padding: 10px 20px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        color: #fff;
+        opacity: 0.9;
+      }
+      .flashes li.success {
+        background-color: #43a047;
+      }
+      .flashes li.error {
+        background-color: #e53935;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="puzzle-pattern"></div>
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
+    <ul class="flashes">
+      {% for category, message in messages %}
+      <li class="{{ category }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %} {% endwith %}
+    <div class="container">
+      <div class="login-box">
+        <div class="progress-container">
+          <div class="progress-bar" id="progress-bar"></div>
+          <div class="step-circles">
+            <div class="step active" data-step="1">1</div>
+            <div class="step" data-step="2">2</div>
+            <div class="step" data-step="3">3</div>
+          </div>
+        </div>
+        <h2>Delivery Partners SignUp</h2>
+        <p>Join our food delivery team 🚚</p>
+        <!-- The form now uses a normal POST submission -->
+        <form
+          id="signup-form"
+          action="{{ url_for('delivery_signup') }}"
+          method="post"
+        >
+          <!-- Step 1: Basic Info -->
+          <div class="form-step" id="step-1">
+            <h3>Basic Information</h3>
+            <div class="input-group">
+              <label for="username"
+                ><span class="emoji">👤</span> Username</label
+              >
+              <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Enter your username"
+                required
+              />
+              <span class="validation-message" id="username-validation"></span>
+            </div>
+            <div class="input-group">
+              <label for="email"
+                ><span class="emoji">📧</span> Email Address</label
+              >
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Enter your email address"
+                required
+              />
+              <span class="validation-message" id="email-validation"></span>
+            </div>
+            <div class="input-group">
+              <label for="phone"
+                ><span class="emoji">📱</span> Phone Number</label
+              >
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                placeholder="Enter your phone number"
+                required
+              />
+              <span class="validation-message" id="phone-validation"></span>
+            </div>
+            <div class="button-group">
+              <button type="button" class="next-btn" id="to-step-2">
+                Next Step
+              </button>
+              <button
+                type="button"
+                class="next-btn"
+                onclick="window.location.href='{{ url_for('employee_login') }}'"
+              >
+                Back to login
+              </button>
+            </div>
+          </div>
+          <!-- Step 2: Security -->
+          <div class="form-step hidden" id="step-2">
+            <h3>Security</h3>
+            <div class="input-group">
+              <label for="password"
+                ><span class="emoji">🔒</span> Password</label
+              >
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Create a strong password"
+                required
+              />
+              <div class="password-strength">
+                <div class="strength-meter">
+                  <div
+                    class="strength-meter-fill"
+                    id="strength-meter-fill"
+                  ></div>
+                </div>
+                <span id="password-strength-text">Password strength</span>
+              </div>
+              <span class="validation-message" id="password-validation"></span>
+            </div>
+            <div class="input-group">
+              <label for="confirm-password"
+                ><span class="emoji">🔐</span> Confirm Password</label
+              >
+              <input
+                type="password"
+                id="confirm-password"
+                name="confirm-password"
+                placeholder="Confirm your password"
+                required
+              />
+              <span
+                class="validation-message"
+                id="confirm-password-validation"
+              ></span>
+            </div>
+            <div class="button-group">
+              <button type="button" class="prev-btn" id="to-step-1">
+                Previous
+              </button>
+              <button type="button" class="next-btn" id="to-step-3">
+                Next Step
+              </button>
+            </div>
+          </div>
+          <!-- Step 3: Delivery Details -->
+          <div class="form-step hidden" id="step-3">
+            <h3>Delivery Details</h3>
+            <div class="input-group">
+              <label for="delivery_area"
+                ><span class="emoji">🗺️</span> Delivery Area</label
+              >
+              <input
+                type="text"
+                id="delivery_area"
+                name="delivery_area"
+                placeholder="Enter your delivery area"
+                required
+              />
+              <span
+                class="validation-message"
+                id="delivery-area-validation"
+              ></span>
+            </div>
+            <div class="input-group">
+              <label for="id_proof"
+                ><span class="emoji">🪪</span> Aadhar Card Number</label
+              >
+              <input
+                type="text"
+                id="id_proof"
+                name="id_proof"
+                placeholder="Enter your Aadhar card number"
+                required
+              />
+              <span class="validation-message" id="id-proof-validation"></span>
+            </div>
+            <div class="input-group" style="text-align: left">
+              <label
+                style="
+                  display: flex;
+                  align-items: center;
+                  font-size: 18px;
+                  gap: 15px;
+                "
+              >
+                <input
+                  type="checkbox"
+                  id="terms"
+                  name="terms"
+                  required
+                  style="width: 24px; height: 24px; accent-color: #007bff"
+                />
+                <span
+                  >I have read and agree to all the terms and conditions.</span
+                >
+              </label>
+              <span class="validation-message" id="terms-validation"></span>
+            </div>
+            <div class="button-group">
+              <button type="button" class="prev-btn" id="to-step-2-from-3">
+                Previous
+              </button>
+              <button type="submit" class="submit-btn">Sign Up</button>
+            </div>
+          </div>
+        </form>
+        <div id="success-message" class="hidden">
+          <div class="success-animation">
+            <svg
+              class="checkmark"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 52 52"
+            >
+              <circle
+                class="checkmark-circle"
+                cx="26"
+                cy="26"
+                r="25"
+                fill="none"
+              />
+              <path
+                class="checkmark-check"
+                fill="none"
+                d="M14.1 27.2l7.1 7.2 16.7-16.8"
+              />
+            </svg>
+          </div>
+          <h3>Registration Successful! 🎉</h3>
+          <p>Welcome to our delivery team!</p>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Function to show flash messages
+        setTimeout(() => {
+          const flashMessages = document.querySelectorAll(".flashes li");
+          flashMessages.forEach((msg) => (msg.style.display = "none"));
+        }, 3000);
+        // Form elements
+        const form = document.getElementById("signup-form");
+        const step1 = document.getElementById("step-1");
+        const step2 = document.getElementById("step-2");
+        const step3 = document.getElementById("step-3");
+        const progressBar = document.getElementById("progress-bar");
+        const steps = document.querySelectorAll(".step");
+
+        // Navigation buttons
+        const toStep2Btn = document.getElementById("to-step-2");
+        const toStep1Btn = document.getElementById("to-step-1");
+        const toStep3Btn = document.getElementById("to-step-3");
+        const toStep2FromStep3Btn = document.getElementById("to-step-2-from-3");
+
+        // Input fields
+        const usernameInput = document.getElementById("username");
+        const emailInput = document.getElementById("email");
+        const phoneInput = document.getElementById("phone");
+        const passwordInput = document.getElementById("password");
+        const confirmPasswordInput =
+          document.getElementById("confirm-password");
+        const deliveryAreaInput = document.getElementById("delivery_area");
+        const idProofInput = document.getElementById("id_proof");
+
+        // Validation messages
+        const usernameValidation = document.getElementById(
+          "username-validation"
+        );
+        const emailValidation = document.getElementById("email-validation");
+        const phoneValidation = document.getElementById("phone-validation");
+        const passwordValidation = document.getElementById(
+          "password-validation"
+        );
+        const confirmPasswordValidation = document.getElementById(
+          "confirm-password-validation"
+        );
+        const deliveryAreaValidation = document.getElementById(
+          "delivery-area-validation"
+        );
+        const idProofValidation = document.getElementById(
+          "id-proof-validation"
+        );
+
+        // Password strength elements
+        const strengthMeterFill = document.getElementById(
+          "strength-meter-fill"
+        );
+        const passwordStrengthText = document.getElementById(
+          "password-strength-text"
+        );
+
+        // Step navigation
+        function goToStep(step) {
+          // Hide all steps
+          step1.classList.add("hidden");
+          step2.classList.add("hidden");
+          step3.classList.add("hidden");
+
+          // Show the requested step and update progress
+          if (step === 1) {
+            step1.classList.remove("hidden");
+            updateProgress(0);
+          } else if (step === 2) {
+            step2.classList.remove("hidden");
+            updateProgress(50);
+          } else if (step === 3) {
+            step3.classList.remove("hidden");
+            updateProgress(100);
+          }
+
+          // Update step indicators
+          steps.forEach((stepEl) => {
+            const stepNum = parseInt(stepEl.getAttribute("data-step"));
+            if (stepNum < step) {
+              stepEl.classList.add("completed", "active");
+            } else if (stepNum === step) {
+              stepEl.classList.add("active");
+              stepEl.classList.remove("completed");
+            } else {
+              stepEl.classList.remove("active", "completed");
+            }
+          });
+        }
+
+        function updateProgress(percent) {
+          progressBar.style.width = percent + "%";
+        }
+
+        // Form validation functions
+        function validateUsername() {
+          const username = usernameInput.value.trim();
+          if (username.length < 3) {
+            usernameValidation.textContent =
+              "Username must be at least 3 characters";
+            usernameValidation.className = "validation-message error";
+            return false;
+          } else {
+            usernameValidation.textContent = "Username looks good! ✓";
+            usernameValidation.className = "validation-message success";
+            return true;
+          }
+        }
+
+        function validateEmail() {
+          const email = emailInput.value.trim();
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(email)) {
+            emailValidation.textContent = "Please enter a valid email address";
+            emailValidation.className = "validation-message error";
+            return false;
+          } else {
+            emailValidation.textContent = "Email looks good! ✓";
+            emailValidation.className = "validation-message success";
+            return true;
+          }
+        }
+
+        function validatePhone() {
+          const phone = phoneInput.value.trim();
+          const phoneRegex = /^\d{10}$/;
+          if (!phoneRegex.test(phone)) {
+            phoneValidation.textContent =
+              "Please enter a 10-digit phone number";
+            phoneValidation.className = "validation-message error";
+            return false;
+          } else {
+            phoneValidation.textContent = "Phone number looks good! ✓";
+            phoneValidation.className = "validation-message success";
+            return true;
+          }
+        }
+
+        function validatePassword() {
+          const password = passwordInput.value;
+          let strength = 0;
+          let feedback = "";
+
+          if (password.length < 8) {
+            feedback = "Password should be at least 8 characters";
+            passwordValidation.className = "validation-message error";
+          } else {
+            strength += 1;
+            if (/[A-Z]/.test(password) && /[a-z]/.test(password)) {
+              strength += 1;
+            }
+            if (/\d/.test(password)) {
+              strength += 1;
+            }
+            if (/[^A-Za-z0-9]/.test(password)) {
+              strength += 1;
+            }
+
+            if (strength < 2) {
+              feedback = "Weak password";
+              passwordValidation.className = "validation-message error";
+            } else if (strength < 4) {
+              feedback = "Moderate password";
+              passwordValidation.className = "validation-message";
+            } else {
+              feedback = "Strong password! ✓";
+              passwordValidation.className = "validation-message success";
+            }
+          }
+
+          const strengthPercentage = (strength / 4) * 100;
+          strengthMeterFill.style.width = strengthPercentage + "%";
+          strengthMeterFill.style.backgroundColor =
+            strength < 2 ? "#ff5252" : strength < 4 ? "#ffb74d" : "#4caf50";
+          passwordStrengthText.textContent = feedback;
+          return strength >= 2;
+        }
+
+        function validateConfirmPassword() {
+          const password = passwordInput.value;
+          const confirmPassword = confirmPasswordInput.value;
+          if (confirmPassword !== password) {
+            confirmPasswordValidation.textContent = "Passwords do not match";
+            confirmPasswordValidation.className = "validation-message error";
+            return false;
+          } else if (confirmPassword === "") {
+            confirmPasswordValidation.textContent =
+              "Please confirm your password";
+            confirmPasswordValidation.className = "validation-message error";
+            return false;
+          } else {
+            confirmPasswordValidation.textContent = "Passwords match! ✓";
+            confirmPasswordValidation.className = "validation-message success";
+            return true;
+          }
+        }
+
+        function validateDeliveryArea() {
+          const deliveryArea = deliveryAreaInput.value.trim();
+          if (deliveryArea.length < 3) {
+            deliveryAreaValidation.textContent =
+              "Please enter a valid delivery area";
+            deliveryAreaValidation.className = "validation-message error";
+            return false;
+          } else {
+            deliveryAreaValidation.textContent = "Delivery area looks good! ✓";
+            deliveryAreaValidation.className = "validation-message success";
+            return true;
+          }
+        }
+
+        function validateIdProof() {
+          const idProof = idProofInput.value.trim();
+          const aadharRegex = /^\d{12}$/;
+          if (!aadharRegex.test(idProof)) {
+            idProofValidation.textContent = "Aadhar number should be 12 digits";
+            idProofValidation.className = "validation-message error";
+            return false;
+          } else {
+            idProofValidation.textContent = "Aadhar number looks good! ✓";
+            idProofValidation.className = "validation-message success";
+            return true;
+          }
+        }
+
+        // Step validations
+        function validateStep1() {
+          return validateUsername() && validateEmail() && validatePhone();
+        }
+
+        function validateStep2() {
+          return validatePassword() && validateConfirmPassword();
+        }
+
+        function validateStep3() {
+          return validateDeliveryArea() && validateIdProof();
+        }
+
+        // Event listeners for real-time validation
+        usernameInput.addEventListener("input", validateUsername);
+        emailInput.addEventListener("input", validateEmail);
+        phoneInput.addEventListener("input", validatePhone);
+        passwordInput.addEventListener("input", validatePassword);
+        confirmPasswordInput.addEventListener("input", validateConfirmPassword);
+        deliveryAreaInput.addEventListener("input", validateDeliveryArea);
+        idProofInput.addEventListener("input", validateIdProof);
+
+        // Navigation event listeners
+        toStep2Btn.addEventListener("click", () => {
+          if (validateStep1()) {
+            goToStep(2);
+          } else {
+            step1.classList.add("shake");
+            setTimeout(() => {
+              step1.classList.remove("shake");
+            }, 500);
+          }
+        });
+
+        toStep1Btn.addEventListener("click", () => {
+          goToStep(1);
+        });
+
+        toStep3Btn.addEventListener("click", () => {
+          if (validateStep2()) {
+            goToStep(3);
+          } else {
+            step2.classList.add("shake");
+            setTimeout(() => {
+              step2.classList.remove("shake");
+            }, 500);
+          }
+        });
+
+        toStep2FromStep3Btn.addEventListener("click", () => {
+          goToStep(2);
+        });
+
+        // Final form submission: only prevent submission if validation fails
+        form.addEventListener("submit", (e) => {
+          if (!validateStep3()) {
+            e.preventDefault();
+            step3.classList.add("shake");
+            setTimeout(() => {
+              step3.classList.remove("shake");
+            }, 500);
+          }
+        });
+
+        // Insert shake animation CSS
+        document.head.insertAdjacentHTML(
+          "beforeend",
+          `<style>
+            @keyframes shake {
+              0%, 100% { transform: translateX(0); }
+              10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+              20%, 40%, 60%, 80% { transform: translateX(5px); }
+            }
+            .shake {
+              animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+            }
+          </style>`
+        );
+
+        // Initialize form at step 1
+        goToStep(1);
+      });
+    </script>
+  </body>
+</html>

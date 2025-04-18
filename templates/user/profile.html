@@ -1,0 +1,334 @@
+{% extends "index.html" %} {% block title %}My Profile{% endblock %} {% block
+css %} {{ super() }}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/user/profile.css') }}"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+/>
+{% endblock css %} {% block content %}
+<div class="profile-container">
+  <div class="profile-header">
+    <h1>My Profile</h1>
+  </div>
+
+  <div class="profile-section user-details">
+    <h2>Personal Information</h2>
+    <div class="user-info">
+      <p><strong>Username:</strong> {{ current_user.username }}</p>
+      <p><strong>Email:</strong> {{ current_user.email }}</p>
+      <p><strong>Phone:</strong> {{ current_user.phone }}</p>
+    </div>
+  </div>
+
+  <div class="profile-section addresses">
+    <h2>My Addresses</h2>
+    <div class="addresses-list">
+      {% for address in current_user.addresses %}
+      <div
+        class="address-card {% if address.is_preferred %}preferred{% endif %}"
+      >
+        <div class="address-content">
+          <p>{{ address.address_line }}</p>
+          <p>{{ address.city }}, {{ address.state }} {{ address.zip_code }}</p>
+        </div>
+        <div class="address-actions">
+          {% if address.is_preferred %}
+          <span class="preferred-badge"
+            ><i class="fas fa-star"></i> Default Address</span
+          >
+          {% else %}
+          <button
+            class="btn-make-preferred"
+            data-address-id="{{ address.address_id }}"
+          >
+            <i class="fas fa-star-o"></i> Set as Default
+          </button>
+          {% endif %}
+          <button
+            class="btn-delete-address"
+            data-address-id="{{ address.address_id }}"
+          >
+            <i class="fas fa-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <button id="btn-add-address" class="btn-primary">
+      <i class="fas fa-plus"></i> Add New Address
+    </button>
+  </div>
+</div>
+
+<!-- Add Address Modal -->
+<div id="address-modal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2 id="modal-title">Add New Address</h2>
+    <form id="address-form">
+      <input type="hidden" id="address-id" />
+      <div class="form-group">
+        <label for="address_line">Address Line</label>
+        <input
+          type="text"
+          id="address_line"
+          name="address_line"
+          required
+          placeholder="Enter your address"
+          aria-label="Address Line"
+        />
+      </div>
+      <div class="form-group">
+        <label for="city">City</label>
+        <input
+          type="text"
+          id="city"
+          name="city"
+          required
+          placeholder="Enter your city"
+          aria-label="City"
+        />
+      </div>
+      <div class="form-group">
+        <label for="state">State</label>
+        <input
+          type="text"
+          id="state"
+          name="state"
+          required
+          placeholder="Enter your state"
+          aria-label="State"
+        />
+      </div>
+      <div class="form-group">
+        <label for="zip_code">PIN Code</label>
+        <input
+          type="text"
+          id="zip_code"
+          name="zip_code"
+          required
+          pattern="^\d{6}$"
+          title="Enter a valid 6-digit PIN Code"
+          placeholder="Enter 6-digit PIN Code"
+          aria-label="PIN Code"
+        />
+      </div>
+      <button type="submit" class="btn-primary">
+        <i class="fas fa-save"></i> Save Address
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="delete-modal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Confirm Delete</h2>
+    <p>Are you sure you want to delete this address?</p>
+    <div
+      class="delete-actions"
+      style="
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        margin-top: 1rem;
+      "
+    >
+      <button id="delete-cancel" class="btn-primary" style="background: #aaa">
+        Cancel
+      </button>
+      <button
+        id="delete-confirm"
+        class="btn-primary"
+        style="background: #d32f2f"
+      >
+        Delete
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block scripts %} {{ super() }}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Modal and form elements
+    const modal = document.getElementById("address-modal");
+    const closeBtn = modal.querySelector(".close");
+    const addAddressBtn = document.getElementById("btn-add-address");
+    const addressForm = document.getElementById("address-form");
+    const modalTitle = document.getElementById("modal-title");
+    const addressIdInput = document.getElementById("address-id");
+
+    // Open modal for new address
+    addAddressBtn.onclick = function () {
+      modalTitle.textContent = "Add New Address";
+      addressForm.reset();
+      addressIdInput.value = "";
+      modal.style.display = "block";
+    };
+
+    // Close address modal on close button or outside click
+    closeBtn.onclick = function () {
+      modal.style.display = "none";
+    };
+    window.onclick = function (event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    };
+
+    // Handle form submission
+    addressForm.onsubmit = async function (e) {
+      e.preventDefault();
+      const formData = new FormData(addressForm);
+      const addressId = addressIdInput.value;
+
+      try {
+        const response = await fetch(`/address/${addressId || "new"}`, {
+          method: addressId ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(Object.fromEntries(formData)),
+        });
+        if (response.ok) {
+          window.location.reload();
+        } else {
+          alert("Error saving address");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Error saving address");
+      }
+    };
+
+    // Delete modal elements and logic
+    const deleteModal = document.getElementById("delete-modal");
+    const deleteCloseBtn = deleteModal.querySelector(".close");
+    const deleteCancelBtn = document.getElementById("delete-cancel");
+    const deleteConfirmBtn = document.getElementById("delete-confirm");
+    let currentDeleteAddressId = null;
+
+    document.querySelectorAll(".btn-delete-address").forEach((button) => {
+      button.onclick = function () {
+        currentDeleteAddressId = this.dataset.addressId;
+        deleteModal.style.display = "block";
+      };
+    });
+
+    deleteCancelBtn.onclick = function () {
+      deleteModal.style.display = "none";
+      currentDeleteAddressId = null;
+    };
+    deleteCloseBtn.onclick = function () {
+      deleteModal.style.display = "none";
+      currentDeleteAddressId = null;
+    };
+    window.addEventListener("click", function (event) {
+      if (event.target == deleteModal) {
+        deleteModal.style.display = "none";
+        currentDeleteAddressId = null;
+      }
+    });
+    deleteConfirmBtn.onclick = async function () {
+      if (currentDeleteAddressId) {
+        try {
+          const response = await fetch(`/address/${currentDeleteAddressId}`, {
+            method: "DELETE",
+          });
+          if (response.ok) {
+            window.location.reload();
+          } else {
+            alert("Error deleting address");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Error deleting address");
+        } finally {
+          deleteModal.style.display = "none";
+          currentDeleteAddressId = null;
+        }
+      }
+    };
+
+    // Handle set preferred address
+    document.querySelectorAll(".btn-make-preferred").forEach((button) => {
+      button.onclick = async function () {
+        const addressId = this.dataset.addressId;
+        try {
+          const response = await fetch(`/address/${addressId}/set-preferred`, {
+            method: "POST",
+          });
+          if (response.ok) {
+            window.location.reload();
+          } else {
+            alert("Error setting preferred address");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Error setting preferred address");
+        }
+      };
+    });
+
+    const themeButton = document.getElementById("theme-button");
+    const darkThemeClass = "dark-theme";
+    // Icon classes: in light mode, use bx-moon; in dark mode, use bx-sun
+    const lightIconClass = "bx-moon";
+    const darkIconClass = "bx-sun";
+
+    // Apply the saved theme from localStorage (default is "light")
+    function applySavedTheme() {
+      const storedTheme = localStorage.getItem("theme") || "light";
+      if (storedTheme === "dark") {
+        document.body.classList.add(darkThemeClass);
+        themeButton.classList.remove(lightIconClass);
+        themeButton.classList.add(darkIconClass);
+      } else {
+        document.body.classList.remove(darkThemeClass);
+        themeButton.classList.remove(darkIconClass);
+        themeButton.classList.add(lightIconClass);
+      }
+      // Ensure localStorage reflects the applied state
+      localStorage.setItem("theme", storedTheme);
+      localStorage.setItem(
+        "theme-icon",
+        document.body.classList.contains(darkThemeClass) ? darkIconClass : lightIconClass
+      );
+    }
+
+    // Toggle theme and update localStorage and icon classes
+    function toggleTheme() {
+      let currentTheme = localStorage.getItem("theme") || "light";
+      if (currentTheme === "light") {
+        document.body.classList.add(darkThemeClass);
+        themeButton.classList.remove(lightIconClass);
+        themeButton.classList.add(darkIconClass);
+        currentTheme = "dark";
+      } else {
+        document.body.classList.remove(darkThemeClass);
+        themeButton.classList.remove(darkIconClass);
+        themeButton.classList.add(lightIconClass);
+        currentTheme = "light";
+      }
+      localStorage.setItem("theme", currentTheme);
+      localStorage.setItem(
+        "theme-icon",
+        document.body.classList.contains(darkThemeClass) ? darkIconClass : lightIconClass
+      );
+    }
+
+    if (themeButton) {
+      themeButton.addEventListener("click", toggleTheme);
+    } else {
+      console.error("Theme button not found in DOMContentLoaded");
+    }
+
+    applySavedTheme();
+  });
+</script>
+{% endblock %}

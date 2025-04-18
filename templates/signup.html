@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signup - HIFI Delivery Eats</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    {% block css %}
+    <link rel="stylesheet" href="/css/signup.css" />
+    {% endblock css %}
+    <style>
+      /* Flash Message Styling - Centered */
+      .flashes {
+        list-style-type: none;
+        padding: 0;
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9999;
+      }
+      .flashes li {
+        padding: 10px 20px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        color: #fff;
+        opacity: 0.9;
+      }
+      .flashes li.success {
+        background-color: #43a047; /* Green for success */
+      }
+      .flashes li.error {
+        background-color: #e53935; /* Red for errors */
+      }
+
+      /* Base Styles */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        transition: all 0.3s ease;
+      }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        /* Background image */
+        background: url('/img/bg3.png') no-repeat center center fixed;
+        background-size: cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        position: relative;
+        overflow-x: hidden;
+      }
+      /* Puzzle Pattern Background (optional overlay) */
+      .puzzle-pattern {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        opacity: 0.4;
+        background-image: linear-gradient(
+            rgba(0, 100, 0, 0.05) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(0, 100, 0, 0.05) 1px, transparent 1px);
+        background-size: 20px 20px;
+        animation: patternMove 20s linear infinite;
+      }
+      @keyframes patternMove {
+        0% { background-position: 0 0; }
+        100% { background-position: 40px 40px; }
+      }
+      
+      .signup-container {
+        width: 100%;
+        max-width: 450px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      h2 {
+        color: #006400;
+        font-size: 28px;
+        margin-bottom: 10px;
+      }
+      p.signup-link {
+        margin-top: 20px;
+        font-size: 14px;
+      }
+      
+      /* Multi-Step Form Styles */
+      .form-step {
+        display: none;
+      }
+      .form-step.active {
+        display: block;
+      }
+      .input-group {
+        margin-bottom: 15px;
+        text-align: left;
+      }
+      .input-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #333;
+      }
+      .input-group input {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+      }
+      .input-group p.error {
+        color: red;
+        font-size: 12px;
+        margin-top: 5px;
+      }
+      
+      /* Button Styles */
+      .buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+      }
+      button {
+        background: rgb(22, 216, 113);
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: rgb(44, 193, 3);
+      }
+      /* Previous button style */
+      .prev-btn {
+        background: #f5f5f5;
+        color: #333;
+      }
+      .prev-btn:hover {
+        background-color: #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Render flash messages from Flask -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    
+    <div class="puzzle-pattern"></div>
+    <div class="signup-container">
+      <h2>HIFI Delivery Eats</h2>
+      <form id="signup-form" action="{{ url_for('signup') }}" method="POST">
+        <!-- Step 1: Basic Info -->
+        <div class="form-step active" id="step-1">
+          <div class="input-group">
+            <label for="username">👤 Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter your username" required />
+            <p class="error" id="username-error"></p>
+          </div>
+          <div class="input-group">
+            <label for="email">📧 Email</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required />
+            <p class="error" id="email-error"></p>
+          </div>
+          <div class="input-group">
+            <label for="phone">📞 Phone</label>
+            <input type="text" id="phone" name="phone" placeholder="Enter your phone" required />
+            <p class="error" id="phone-error"></p>
+          </div>
+          <div class="input-group">
+            <label for="password">🔒 Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required />
+            <p class="error" id="password-error"></p>
+          </div>
+          <div class="buttons">
+            <button type="button" onclick="nextStep()">Next</button>
+          </div>
+        </div>
+        
+        <!-- Step 2: Address Info -->
+        <div class="form-step" id="step-2">
+          <div class="input-group">
+            <label for="address_line">🏡 Address Line</label>
+            <input type="text" id="address_line" name="address_line" placeholder="Enter your street address" required />
+            <p class="error" id="address_line-error"></p>
+          </div>
+          <div class="input-group">
+            <label for="city">🌆 City</label>
+            <input type="text" id="city" name="city" placeholder="Enter your city" required />
+            <p class="error" id="city-error"></p>
+          </div>
+          <div class="input-group">
+            <label for="state">🌍 State</label>
+            <input type="text" id="state" name="state" placeholder="Enter your state" required />
+            <p class="error" id="state-error"></p>
+          </div>
+          <div class="input-group">
+            <label for="zip_code">📮 Pin Code</label>
+            <input type="text" id="zip_code" name="zip_code" placeholder="Enter your pin code" required />
+            <p class="error" id="zip_code-error"></p>
+          </div>
+          <div class="buttons">
+            <button type="button" class="prev-btn" onclick="prevStep()">Previous</button>
+            <button type="submit" class="signup-btn">Sign Up 🚀</button>
+          </div>
+        </div>
+      </form>
+      
+      <p class="signup-link">
+        Already have an account?
+        <a href="{{ url_for('login') }}" class="login-btn">Login</a>
+      </p>
+    </div>
+    
+    <script>
+      // Validation for Step 1
+      function validateStep1() {
+        let valid = true;
+        
+        // Username Validation
+        const username = document.getElementById("username").value.trim();
+        if (username.length < 3) {
+          document.getElementById("username-error").innerText = "Username must be at least 3 characters";
+          valid = false;
+        } else {
+          document.getElementById("username-error").innerText = "";
+        }
+        
+        // Email Validation
+        const email = document.getElementById("email").value.trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          document.getElementById("email-error").innerText = "Please enter a valid email address";
+          valid = false;
+        } else {
+          document.getElementById("email-error").innerText = "";
+        }
+        
+        // Phone Validation
+        const phone = document.getElementById("phone").value.trim();
+        if (phone.length !== 10 || isNaN(phone)) {
+          document.getElementById("phone-error").innerText = "Phone number must be 10 digits";
+          valid = false;
+        } else {
+          document.getElementById("phone-error").innerText = "";
+        }
+        
+        // Password Validation
+        const password = document.getElementById("password").value;
+        if (password.length < 6) {
+          document.getElementById("password-error").innerText = "Password must be at least 6 characters";
+          valid = false;
+        } else if (!(/[A-Z]/.test(password))) {
+          document.getElementById("password-error").innerText = "Password must contain at least one uppercase letter";
+          valid = false;
+        } else if (!(/[0-9]/.test(password))) {
+          document.getElementById("password-error").innerText = "Password must contain at least one number";
+          valid = false;
+        } else if (!(/[^A-Za-z0-9]/.test(password))) {
+          document.getElementById("password-error").innerText = "Password must contain at least one special character";
+          valid = false;
+        } else {
+          document.getElementById("password-error").innerText = "";
+        }
+        
+        return valid;
+      }
+      
+      // Validation for Step 2
+      function validateStep2() {
+        let valid = true;
+        
+        const address_line = document.getElementById("address_line").value.trim();
+        if (address_line === "") {
+          document.getElementById("address_line-error").innerText = "Address is required";
+          valid = false;
+        } else {
+          document.getElementById("address_line-error").innerText = "";
+        }
+        
+        const city = document.getElementById("city").value.trim();
+        if (city === "") {
+          document.getElementById("city-error").innerText = "City is required";
+          valid = false;
+        } else {
+          document.getElementById("city-error").innerText = "";
+        }
+        
+        const state = document.getElementById("state").value.trim();
+        if (state === "") {
+          document.getElementById("state-error").innerText = "State is required";
+          valid = false;
+        } else {
+          document.getElementById("state-error").innerText = "";
+        }
+        
+        const zip_code = document.getElementById("zip_code").value.trim();
+        if (zip_code === "") {
+          document.getElementById("zip_code-error").innerText = "Pin Code is required";
+          valid = false;
+        } else {
+          document.getElementById("zip_code-error").innerText = "";
+        }
+        
+        return valid;
+      }
+      
+      // Step navigation functions
+      function nextStep() {
+        if (validateStep1()) {
+          document.getElementById("step-1").classList.remove("active");
+          document.getElementById("step-2").classList.add("active");
+        }
+      }
+      function prevStep() {
+        document.getElementById("step-2").classList.remove("active");
+        document.getElementById("step-1").classList.add("active");
+      }
+      
+      // Form submission validation
+      document.getElementById("signup-form").addEventListener("submit", function (e) {
+        if (!validateStep2()) {
+          e.preventDefault();
+        }
+      });
+      
+      // Auto-dismiss flash messages after 3 seconds
+      document.addEventListener("DOMContentLoaded", () => {
+        setTimeout(() => {
+          const flashes = document.querySelector(".flashes");
+          if (flashes) {
+            flashes.remove();
+          }
+        }, 5000);
+      });
+    </script>
+  </body>
+</html>

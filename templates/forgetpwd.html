@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forgot Password | HIFI Delivery Eats</title>
+
+    <!-- Google Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Link Css file -->
+    {% block css %}
+      <link rel="stylesheet" href="/css/forgetpwd.css" />
+    {% endblock css %}
+
+  </head>
+  <body>
+    <div class="reset-password-container">
+      <h2>🔐 Forgot Your Password?</h2>
+      <p>Enter your details below to reset your password.</p>
+      
+
+      <form id="resetPasswordForm" action="{{ url_for('reset_password', token=token) }}"
+      method="POST">
+        <div class="input-group">
+          <span class="emoji">🙍‍♂️</span>
+          <input
+            type="text"
+            id="email"
+            name="email"
+            placeholder="Enter your email"
+            required
+          />
+        </div>
+
+        <div class="input-group">
+          <span class="emoji">🔑</span>
+          <input
+            type="password"
+            id="newPassword"
+            name="newPassword"
+            placeholder="Enter new password"
+            required
+          />
+        </div>
+
+        <div class="input-group">
+          <span class="emoji">🔒</span>
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            placeholder="Confirm new password"
+            required
+          />
+        </div>
+
+        <button type="submit">Reset Password ✅</button>
+      </form>
+
+      <!-- Redirect the login page  -->
+      <p class="back-to-login">⬅ <a href="{{ url_for('login') }}">Back to Login</a></p>
+
+    </div>
+
+    <script>
+      document
+        .getElementById("resetPasswordForm")
+        .addEventListener("submit", function (event) {
+          let newPassword = document.getElementById("newPassword").value;
+          let confirmPassword =
+            document.getElementById("confirmPassword").value;
+
+          if (newPassword.length < 6) {
+            alert("Password must be at least 6 characters long.");
+            event.preventDefault(); // Prevent submission if invalid
+          } else if (newPassword !== confirmPassword) {
+            alert("Passwords do not match. Please try again.");
+            event.preventDefault(); // Prevent submission if invalid
+          }
+        });
+    </script>
+  </body>
+</html>

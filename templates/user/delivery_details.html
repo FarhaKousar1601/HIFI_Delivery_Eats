@@ -1,0 +1,653 @@
+{% extends "index.html" %}
+{% block title %} Delivery Details {%endblock title %}
+{% block css %} {{super()}}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        /* Stack content and footer vertically */
+        justify-content: space-between;
+        /* Push footer to bottom */
+        align-items: center;
+        overflow-y: auto;
+    }
+
+    body:not(.dark-theme) {
+        background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        /* Light mode only */
+    }
+
+    .dark-theme body {
+        background: #1e2a25 !important;
+        /* Force dark mode background */
+        color: #ffffff;
+        /* White text for contrast */
+    }
+
+    .container {
+        max-width: 900px;
+        width: 100%;
+        margin: 70px 20px 20px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: visible;
+        /* Already set, but ensure it’s not overridden elsewhere */
+        animation: fadeIn 0.8s ease-out;
+        transition: background 0.3s, box-shadow 0.3s;
+        position: relative;
+        /* Ensure container is a positioning context */
+    }
+
+    .dark-theme .container {
+        background: #263a2e;
+        /* Darker green for container, matching order.css */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    .header {
+        background: #4CAF50;
+        color: white;
+        padding: 20px;
+        text-align: center;
+        font-size: 28px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        position: relative;
+        transition: background 0.3s;
+        /* Smooth transition for dark mode */
+    }
+
+    .dark-theme .header {
+        background: #2e7d32;
+        /* Darker green for header in dark mode */
+    }
+
+    .header::after {
+        content: '';
+        width: 60px;
+        height: 4px;
+        background: #fff;
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 2px;
+    }
+
+    .dark-theme .header::after {
+        background: #e0e0e0;
+        /* Lighter line in dark mode */
+    }
+
+    .order-preview {
+        padding: 15px 20px;
+        background: #f1f8e9;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+        transition: background 0.3s, border-color 0.3s;
+        /* Smooth transition for dark mode */
+    }
+
+    .dark-theme .order-preview {
+        background: #2a3d2f;
+        /* Dark green for preview */
+        border-bottom: 1px solid #3d5a40;
+        color: #a5d6a7;
+        /* Lighter green text */
+    }
+
+    .order-preview:hover {
+        background: #e0f2e9;
+    }
+
+    .dark-theme .order-preview:hover {
+        background: #314e36;
+    }
+
+    .order-preview p {
+        margin: 5px 0;
+        color: #2e7d32;
+        font-size: 18px;
+        font-weight: 600;
+        transition: color 0.3s;
+        /* Smooth transition for dark mode */
+    }
+
+    .dark-theme .order-preview p {
+        color: #a5d6a7;
+        /* Lighter green text in dark mode */
+    }
+
+    .delivery-section {
+        padding: 25px;
+        background: #fff;
+        transition: background 0.3s;
+        overflow: visible;
+        /* Already set, ensure no clipping */
+    }
+
+    .dark-theme .delivery-section {
+        background: #2a3d2f;
+        overflow: visible;
+    }
+
+    .section-title {
+        color: #2e7d32;
+        font-size: 22px;
+        margin-bottom: 20px;
+        font-weight: 600;
+        position: relative;
+        display: inline-block;
+        transition: color 0.3s;
+        /* Smooth transition for dark mode */
+    }
+
+    .dark-theme .section-title {
+        color: #a5d6a7;
+        /* Lighter green in dark mode */
+    }
+
+    .section-title::before {
+        content: '✦';
+        color: #4CAF50;
+        margin-right: 8px;
+        transition: color 0.3s;
+        /* Smooth transition for dark mode */
+    }
+
+    .dark-theme .section-title::before {
+        color: #81c784;
+        /* Lighter green in dark mode */
+    }
+
+    .delivery-form {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        margin-bottom: 6px;
+        color: #2e7d32;
+        font-weight: 500;
+        font-size: 14px;
+        transition: color 0.3s;
+        /* Smooth transition for dark mode */
+    }
+
+    .dark-theme .form-group label {
+        color: #a5d6a7;
+        /* Lighter green in dark mode */
+    }
+
+    .form-group input {
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: border 0.3s, box-shadow 0.3s, background 0.3s, color 0.3s;
+        /* Smooth transition for dark mode */
+    }
+
+    .dark-theme .form-group input {
+        border-color: #3d5a40;
+        background: #314e36;
+        color: #ffffff;
+        /* White text in dark mode */
+    }
+
+    .form-group input:focus {
+        border-color: #4CAF50;
+        box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
+        outline: none;
+    }
+
+    .dark-theme .form-group input:focus {
+        border-color: #81c784;
+        box-shadow: 0 0 8px rgba(129, 199, 132, 0.3);
+    }
+
+    .form-group input[readonly] {
+        background: #f0f0f0;
+        cursor: not-allowed;
+    }
+
+    .dark-theme .form-group input[readonly] {
+        background: #2a3d2f;
+        color: #a5d6a7;
+        /* Lighter green text for readability */
+    }
+
+    .delivery-map {
+        height: 300px;
+        width: 100%;
+        margin-top: 20px;
+        border-radius: 10px;
+        border: 2px solid #4CAF50;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+        position: relative;
+        /* Ensure map is positioned within its container */
+        overflow: hidden;
+        /* Contain map tiles within this div */
+        z-index: 1;
+        /* Keep map above other elements */
+    }
+
+    .dark-theme .delivery-map {
+        border-color: #81c784;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .delivery-map:hover {
+        transform: scale(1.02);
+    }
+
+    .payment-section {
+        padding: 25px;
+        background: #fff;
+        border-top: 1px solid #ddd;
+        width: 100vh;
+        transition: background 0.3s, border-color 0.3s;
+        /* Smooth transition for dark mode */
+    }
+
+    .dark-theme .payment-section {
+        background: #2a3d2f;
+        border-top: 1px solid #3d5a40;
+    }
+
+    .payment-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+    }
+
+    .payment-option {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 20px;
+        background: #f9f9f9;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        cursor: pointer;
+        transition: transform 0.3s, background 0.3s;
+    }
+
+    .dark-theme .payment-option {
+        background: #314e36;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .payment-option:hover {
+        transform: translateY(-4px);
+        background: #e8f5e9;
+    }
+
+    .dark-theme .payment-option:hover {
+        background: #3d5a40;
+    }
+
+    .payment-option input {
+        margin: 0;
+        cursor: pointer;
+        transform: scale(1.2);
+    }
+
+    .payment-option label {
+        color: #2e7d32;
+        font-size: 16px;
+        cursor: pointer;
+        transition: color 0.3s;
+        /* Smooth transition for dark mode */
+    }
+
+    .dark-theme .payment-option label {
+        color: #a5d6a7;
+        /* Lighter green in dark mode */
+    }
+
+    .confirm-section {
+        padding: 25px;
+        text-align: center;
+        background: #fff;
+        transition: background 0.3s;
+        /* Smooth transition for dark mode */
+    }
+
+    .dark-theme .confirm-section {
+        background: #2a3d2f;
+    }
+
+    .confirm-btn {
+        background: linear-gradient(45deg, #4CAF50, #45a049);
+        color: white;
+        padding: 14px 35px;
+        border: none;
+        border-radius: 25px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+        box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dark-theme .confirm-btn {
+        background: linear-gradient(45deg, #2e7d32, #1b5e20);
+    }
+
+    .confirm-btn::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.2);
+        top: 0;
+        left: -100%;
+        transition: width 0.3s;
+    }
+
+    .confirm-btn:hover::after {
+        width: 100%;
+    }
+
+    .confirm-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(76, 175, 80, 0.5);
+    }
+
+    .dark-theme .confirm-btn:hover {
+        box-shadow: 0 8px 20px rgba(44, 122, 50, 0.5);
+    }
+
+    .confirm-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+    }
+
+    .dark-theme .confirm-btn:active {
+        box-shadow: 0 4px 10px rgba(44, 122, 50, 0.3);
+    }
+
+    /* Dropdown arrow styling */
+    .nav__dropdown .nav__link {
+        position: relative;
+        padding-right: 20px;
+        /* Space for the arrow */
+    }
+
+    .nav__dropdown .nav__link::after {
+        content: "\25BC";
+        /* Downward triangle */
+        position: absolute;
+        right: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 12px;
+        color: #4CAF50;
+        /* Green color to match theme */
+        transition: color 0.3s;
+        /* Smooth color transition */
+    }
+
+    .dark-theme .nav__dropdown .nav__link::after {
+        color: #81c784;
+        /* Lighter green in dark mode */
+    }
+
+    .nav__dropdown:hover .nav__link::after {
+        color: #81c784;
+        /* Lighter green on hover */
+    }
+
+    .dark-theme .nav__dropdown:hover .nav__link::after {
+        color: #a5d6a7;
+        /* Even lighter green in dark mode on hover */
+    }
+
+    /* Digital Popup Styling */
+    .popup-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .popup {
+        background: #4CAF50;
+        /* Green background for the popup */
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        animation: slideIn 0.3s ease-out;
+        position: relative;
+    }
+
+    .dark-theme .popup {
+        background: #2e7d32;
+        /* Darker green in dark mode */
+        color: #ffffff;
+        /* White text for contrast */
+    }
+
+    .popup h3 {
+        margin: 0 0 15px;
+        color: #ffffff;
+        /* White text for contrast on green background */
+    }
+
+    .dark-theme .popup h3 {
+        color: #ffffff;
+        /* Ensure white text in dark mode */
+    }
+
+    .popup p {
+        margin: 0 0 20px;
+        color: #ffffff;
+        /* White text for contrast */
+    }
+
+    .dark-theme .popup p {
+        color: #ffffff;
+        /* White text in dark mode */
+    }
+
+    .popup .close-btn,
+    .popup .confirm-btn {
+        background: #ffffff;
+        /* White buttons */
+        color: #2e7d32;
+        /* Dark green text for contrast */
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.2s, color 0.3s;
+    }
+
+    .dark-theme .popup .close-btn,
+    .dark-theme .popup .confirm-btn {
+        background: #ffffff;
+        /* White buttons in dark mode */
+        color: #1b5e20;
+        /* Slightly darker green text in dark mode */
+    }
+
+    .popup .close-btn:hover,
+    .popup .confirm-btn:hover {
+        background: #e0e0e0;
+        /* Light gray on hover */
+        transform: translateY(-2px);
+    }
+
+    .dark-theme .popup .close-btn:hover,
+    .dark-theme .popup .confirm-btn:hover {
+        background: #e0e0e0;
+        color: #1b5e20;
+    }
+
+    .popup .close-btn {
+        margin-right: 10px;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .container {
+            margin: 70px 10px 20px;
+            /* Adjusted for fixed title bar on small screens */
+        }
+
+        .delivery-form {
+            grid-template-columns: 1fr;
+        }
+
+        .payment-option {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock css %}
+
+{%block nav_bar%}{{super()}}{%endblock nav_bar%}
+
+
+
+{% block content2 %}
+
+<div class="container">
+    <div class="header">Finalize Your Order</div>
+    <div class="order-preview">
+        <p><span id="total-preview"></span></p>
+    </div>
+    <div class="delivery-section">
+        <h3 class="section-title">Delivery Details</h3>
+        <div class="delivery-form">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" placeholder="Enter your full name"
+                    value="{{ user.username | default('') }}" />
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="text" id="phone" placeholder="Enter your phone number"
+                    value="{{ user.phone | default('') }}" />
+            </div>
+            <div class="form-group">
+                <label for="street">Street Address</label>
+                <input type="text" id="street" placeholder="Enter street address"
+                    value="{{ address.address_line | default('') }}" />
+            </div>
+            <div class="form-group">
+                <label for="city">City</label>
+                <input type="text" id="city" placeholder="Enter city" value="{{ address.city | default('') }}" />
+            </div>
+            <div class="form-group">
+                <label for="state">State</label>
+                <input type="text" id="state" placeholder="Enter state" value="{{ address.state | default('') }}" />
+            </div>
+            <div class="form-group">
+                <label for="pincode">Pincode</label>
+                <input type="text" id="pincode" placeholder="Enter pincode"
+                    value="{{ address.zip_code | default('') }}" />
+            </div>
+
+            <!-- Map container in the delivery section -->
+            <div class="form-group" style="grid-column: 1 / -1;">
+                <label for="coordinates">Coordinates</label>
+                <input type="text" id="coordinates" placeholder="Click map to set" readonly />
+            </div>
+            <div id="map" class="delivery-map" style="grid-column: 1 / -1;"></div>
+
+            
+
+
+            <div class="payment-section">
+                <div><h3 class="section-title">Payment Method</h3></div>
+                <div class="payment-options">
+                    <div class="payment-option">
+                        <input type="radio" name="payment" id="cash" value="cod" checked />
+                        <label for="cash">Cash on Delivery</label>
+                    </div>
+                    <!-- <div class="payment-option">
+          <input type="radio" name="payment" id="online" value="online" />
+          <label for="online">Online Payment</label>
+        </div> -->
+                </div>
+                <div class="confirm-section">
+                    <button id="confirm-order-btn" class="confirm-btn">Confirm Order</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Popup Structure -->
+        <div class="popup-overlay" id="popup-overlay">
+            <div class="popup" id="popup">
+                <h3 id="popup-title">Confirmation</h3>
+                <p id="popup-message">Are you sure you want to confirm this order?</p>
+                <button class="close-btn" id="popup-close">Cancel</button>
+                <button class="confirm-btn" id="popup-confirm">Confirm</button>
+            </div>
+        </div>
+
+        {% endblock content2 %}
+
+
+
+        {% block scripts %}
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+        <script>
+            window.initialCart = {{ cart_json | safe }} || [];
+            window.total = {{ total }};
+            window.subtotal = {{ subtotal }};
+            window.tax = {{ tax }};
+            window.deliveryCharge = {{ delivery_charge }};
+        </script>
+
+        <script src="{{ url_for('static', filename='js/user/delivery_details.js') }}" defer></script>
+        {% endblock scripts%}

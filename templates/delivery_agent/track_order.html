@@ -1,0 +1,177 @@
+{% extends "delivery_agent/index.html" %} {% block css %}
+<link
+  href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+  rel="stylesheet"
+/>
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  rel="stylesheet"
+/>
+<link href="/css/delivery_agent/track_order.css" rel="stylesheet" />
+{% endblock css %} {% block content %}
+<div class="order-detail-container" data-order-id="{{ order.order_id }}">
+  <header>
+    <div class="logo">
+      <i class="fas fa-clock logo-icon"></i>
+      <h1>Order Detail</h1>
+    </div>
+    <div class="order-status">
+      <span class="status-label">Status:</span>
+      <span
+        class="status-value"
+        id="orderStatus"
+        data-status="{{ order.delivery_status }}"
+      >
+        {{ order.delivery_status }}
+      </span>
+    </div>
+  </header>
+  <main>
+    <section class="order-info card">
+      <h2>Order #{{ order.order_id }}</h2>
+      <p class="order-time">
+        Ordered at:
+        <span id="orderTime"
+          >{{ order.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span
+        >
+      </p>
+      <div class="estimated-delivery">
+        <i class="fas fa-clock"></i>
+        <span>Estimated Delivery: </span>
+        <span id="estimatedDelivery">30:00</span>
+      </div>
+    </section>
+    <section class="customer-info card">
+      <h2>Customer Details</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <i class="fas fa-user"></i>
+          <p id="customerName">{{ order.customer.username }}</p>
+        </div>
+        <div class="info-item phone-info">
+          <i class="fas fa-phone"></i>
+          <p id="customerPhone">{{ order.customer.phone }}</p>
+          <div class="phone-actions">
+            <a href="tel:{{ order.customer.phone }}" class="btn btn-call">
+              <i class="fas fa-phone-alt"></i> Call
+            </a>
+            <a href="sms:{{ order.customer.phone }}" class="btn btn-text">
+              <i class="fas fa-comment-dots"></i> Text
+            </a>
+          </div>
+        </div>
+        <div class="info-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <p id="customerAddress">
+            {% if order.customer.addresses %} {{
+            order.customer.addresses[0].address_line }}, {{
+            order.customer.addresses[0].city }}, {{ order.customer.addresses[0].state }}
+            - {{ order.customer.addresses[0].zip_code }} {% else %} No address
+            provided. {% endif %}
+          </p>
+        </div>
+      </div>
+    </section>
+    <section class="order-items card">
+      <h2>Ordered Items</h2>
+      <ul id="itemList">
+        {% for item in order.order_items %}
+        <li>
+          <span>{{ item.menu_item.name }} (x{{ item.quantity }})</span>
+          <span>₹{{ '%.2f' | format(item.price * item.quantity) }}</span>
+        </li>
+        {% else %}
+        <li>No items found.</li>
+        {% endfor %}
+      </ul>
+      {% set ns = namespace(subtotal=0) %}
+      {% for item in order.order_items %}
+          {% set ns.subtotal = ns.subtotal + (item.price * item.quantity) %}
+      {% endfor %}
+      {% set delivery_fee = 50 %}
+      {% set tax = ns.subtotal|float * 0.1 %}
+      {% set total = ns.subtotal|float + delivery_fee + tax %}
+
+      <div class="order-summary">
+        <div class="summary-item">
+          <span>Subtotal:</span>
+          <span id="subtotal">₹{{ '%.2f' | format(ns.subtotal) }}</span>
+        </div>
+        <div class="summary-item">
+          <span>Delivery Fee:</span>
+          <span id="deliveryFee">₹{{ '%.2f' | format(delivery_fee) }}</span>
+        </div>
+        <div class="summary-item">
+          <span>Tax:</span>
+          <span id="tax">₹{{ '%.2f' | format(tax) }}</span>
+        </div>
+        <div class="summary-item total">
+          <span>Total:</span>
+          <span id="orderTotal">₹{{ '%.2f' | format(total) }}</span>
+        </div>
+      </div>
+    </section>
+    <!-- Tracking Section -->
+    <section class="tracking-section card">
+      <h2>Order Tracking</h2>
+      <div class="tracking-container">
+        <!-- Horizontal line connecting steps -->
+        <!-- Progress bar -->
+        <div class="progress-bar">
+          <div class="progress" id="progressBar"></div>
+        </div>
+        <!-- Steps -->
+        <div class="tracking-steps">
+          <div class="tracking-step" data-step="Accepted">
+            <div class="step-icon-container">
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/747/747376.png"
+                alt="Accepted"
+              />
+            </div>
+            <div class="step-text">Accepted</div>
+          </div>
+          <div class="tracking-step" data-step="Picked Up">
+            <div class="step-icon-container">
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/1046/1046784.png"
+                alt="Picked Up"
+              />
+            </div>
+            <div class="step-text">Picked Up</div>
+          </div>
+          <div class="tracking-step" data-step="Out for Delivery">
+            <div class="step-icon-container">
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png"
+                alt="Out for Delivery"
+              />
+            </div>
+            <div class="step-text">Out for Delivery</div>
+          </div>
+          <div class="tracking-step" data-step="Delivered">
+            <div class="step-icon-container">
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/190/190411.png"
+                alt="Delivered"
+              />
+            </div>
+            <div class="step-text">Delivered</div>
+          </div>
+        </div>
+      </div>
+      <div class="tracking-actions">
+        <button
+          id="updateStatusBtn"
+          class="btn-update-status"
+          onclick="trackOrder()"
+        >
+          Update Status
+        </button>
+      </div>
+    </section>
+  </main>
+</div>
+{% endblock content %} {% block script %}
+<script src="/js/delivery_agent/track_order.js"></script>
+{% endblock script %}

@@ -1,0 +1,218 @@
+{% extends "index.html" %} {% block title %}Cart - HIFI Delivery Eats{%
+endblock title %} {% block css %} {{super()}}
+<!-- <link href="https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css" rel="stylesheet" /> -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user/order.css') }}" />
+<!-- Add Leaflet CSS and JS -->
+<link
+rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+{% endblock css %}
+
+{%block nav_bar%}{{super()}}{%endblock nav_bar%}
+
+
+{% block content %}
+      <section class="cart section bd-container" id="cart">
+        <span class="section-subtitle">Your Order</span>
+        <h2 class="section-title">Cart</h2>
+
+        <div class="cart__container bd-grid">
+          <section class="cart__inner-section">
+            <div class="cart__clear-controls" id="cart-clear-controls">
+              <!-- Clear Cart, Select All, and selection controls will be inserted here -->
+            </div>
+            <div class="cart__content">
+              <div class="cart__items" id="cart-items">
+                <!-- Cart items will be dynamically inserted here -->
+              </div>
+            </div>
+          </section>
+
+          <div class="cart__summary" id="order-summary" style="display: none">
+            <h3 class="cart__summary-title">Order Summary</h3>
+            <div class="cart__summary-details">
+              <p>Subtotal: <span id="subtotal">₹ 0.00</span></p>
+              <p>Tax (18%): <span id="tax">₹ 0.00</span></p>
+              <p>Delivery Charge: <span id="delivery">₹ 50.00</span></p>
+              <p>Discount: <span id="discount">₹ 0.00</span></p>
+              <p class="cart__summary-total">
+                Total: <span id="total">₹ 0.00</span>
+              </p>
+            </div>
+
+            <!-- Customer Details Form -->
+            <div class="customer__details">
+              <h3>Delivery Details</h3>
+              <label
+                >Name<input
+                  type="text"
+                  id="name"
+                  placeholder="Eg: Rahul"
+                  required
+              /></label>
+              <label
+                >Phone Number<input
+                  type="tel"
+                  id="phone"
+                  placeholder="Eg: +918892234567"
+                  required
+              /></label>
+              <label
+                >Street<input
+                  type="text"
+                  id="street"
+                  placeholder="Eg: #23/3/2, 2nd Cross, Gaandhi Nagar"
+                  required
+              /></label>
+              <label
+                >City<input
+                  type="text"
+                  id="city"
+                  placeholder="Eg: Bengaluru"
+                  required
+              /></label>
+              <label
+                >State<input
+                  type="text"
+                  id="state"
+                  placeholder="Eg: Karnataka"
+                  required
+              /></label>
+              <label
+                >PIN Code<input
+                  type="text"
+                  id="pincode"
+                  placeholder="Eg: 560062"
+                  required
+              /></label>
+              <label
+                >Coordinates<input
+                  type="text"
+                  id="coordinates"
+                  placeholder="Coordinates"
+                  readonly
+              /></label>
+              <!-- Map container -->
+              <div id="map"></div>
+            </div>
+
+            <!-- Payment Options -->
+            <div class="payment__options">
+              <h3>Select Payment Method</h3>
+              <div class="payment__option">
+                <input
+                  type="radio"
+                  id="cod"
+                  name="payment"
+                  value="cod"
+                  checked
+                />
+                <label for="cod">Cash on Delivery</label>
+              </div>
+              <!-- <div class="payment__option">
+                <input type="radio" id="online" name="payment" value="online" />
+                <label for="online">Online Payment</label>
+              </div> -->
+            </div>
+
+            <button class="button payment__confirm" id="place-order-button">
+              Place Order
+            </button>
+          </div>
+        </div>
+
+        <!-- Current Order Details Section -->
+        <div class="current-order" id="current-order" style="display: none">
+          <h2>Current Order Details</h2>
+          <table class="order__table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Name</th>
+                <th>Image</th>
+                <th>Item</th>
+                <th>Price</th>
+                <th>Delivery Details</th>
+                <th>Payment Method</th>
+                <th>Delivery Agent Details</th>
+                <th>Order Status</th>
+              </tr>
+            </thead>
+            <tbody id="current-order-details">
+              <!-- Current order details will be inserted here -->
+            </tbody>
+          </table>
+          <button
+            class="button cancel-order"
+            id="cancel-order-button"
+            style="margin-top: 20px"
+          >
+            Cancel Order
+          </button>
+        </div>
+
+        <!-- Updated Order History Section -->
+        <div class="order__history" id="order-history" style="display: none">
+            <h2>Your Past Orders</h2>
+            <table class="order__table">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Name</th>
+                  <th>Image</th>
+                  <th>Item</th>
+                  <th>Price</th>
+                  <th>Delivery Details</th>
+                  <th>Payment Method</th>
+                  <th>Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="order-history-details">
+                <!-- Past order details will be inserted here dynamically -->
+              </tbody>
+            </table>
+            <button class="button clear__orders" id="clear-orders-button" style="margin-top: 20px">
+              Clear Orders
+            </button>
+          </div>
+
+        <!-- Order Confirmation Section -->
+        <div
+          class="order__confirmation"
+          id="order-confirmation"
+          style="display: none"
+        >
+          <h2>Order Confirmation</h2>
+          <table class="order__table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Name</th>
+                <th>Image</th>
+                <th>Item</th>
+                <th>Price</th>
+                <th>Delivery Details</th>
+                <th>Payment Method</th>
+              </tr>
+            </thead>
+            <tbody id="order-details">
+              <!-- Current order details will be inserted here -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+{% endblock content %}
+{% block scripts %} {{super()}}
+
+<script>
+    /* Pass cart data from Flask to JavaScript */
+    window.initialCart = {{ cart_json | safe}} || [];
+    console.log("Initial cart from Flask:", window.initialCart); // Debug log
+</script>
+<script src="https://unpkg.com/scrollreveal" defer></script>
+<script src="{{ url_for('static', filename='js/user/order.js') }}" defer></script>
+{% endblock scripts %}

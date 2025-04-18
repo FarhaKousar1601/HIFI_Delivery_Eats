@@ -1,0 +1,78 @@
+{% extends 'admin/index.html' %} {% block css %} {{ super() }}
+<!-- Link to the home-specific CSS file -->
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/admin/home.css') }}"
+/>
+{% endblock css %} {% block content %}
+
+<div class="container">
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <h3>Total Orders</h3>
+      <div class="metric-value" id="totalOrders">{{ total_orders }}</div>
+    </div>
+    <div class="metric-card">
+      <h3>Total Users</h3>
+      <div class="metric-value" id="totalUsers">{{ total_users }}</div>
+    </div>
+    <div class="metric-card">
+      <h3>Total Sales</h3>
+      <div class="metric-value" id="totalSales">
+        ₹{{ overall_total_sales | round(2) }}
+      </div>
+    </div>
+    <div class="metric-card">
+      <h3>Delivery Partners</h3>
+      <div class="metric-value" id="newUsers">{{ delivery_partners }}</div>
+    </div>
+  </div>
+
+  <section class="admin-section">
+    <h2>Sales Overview</h2>
+    <div class="chart-container">
+      {% if chart_html %} {{ chart_html|safe }} {% elif image_url %}
+      <img src="{{ image_url }}" alt="chart" />
+      {% else %}
+      <p>{{ message }}</p>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="admin-section">
+    <h2>Recent Orders</h2>
+    <table class="data-table" id="recentOrders">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Items</th>
+          <th>Total</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in recent_orders %}
+        <tr>
+          <td>{{ order.id }}</td>
+          <td>{{ order.user.username if order.user else "N/A" }}</td>
+          <td>
+            {% for item in order.items %} {{ item.menu_item.name }} ({{
+            item.quantity }}){% if not loop.last %}, {% endif %} {% endfor %}
+          </td>
+          <td>₹{{ order.total_price | round(2) }}</td>
+          <td
+            class="{% if order.delivery_status == 'Pending' %} status-pending {% elif order.delivery_status == 'Delivered' %} status-completed {% elif order.delivery_status == 'Cancelled' %} status-cancelled {% endif %}"
+          >
+            {{ order.delivery_status }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+</div>
+
+{% endblock content %} {% block script %} {{ super() }}
+<script src="{{ url_for('static', filename='js/admin/home.js') }}"></script>
+{% endblock script %}

@@ -1,0 +1,382 @@
+:root {
+    --primary-color: #ee4b4b;
+    --primary-dark: #d63f3f;
+    --secondary-color: #333333;
+    --success-color: #2ecc71;
+    --success-dark: #27ae60;
+    --warning-color: #f39c12;
+    --danger-color: #e74c3c;
+    --danger-dark: #c0392b;
+    --text-color: #333333;
+    --bg-color: #f0fff0;
+    --card-bg: #ffffff;
+    --shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+
+
+
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: var(--card-bg);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
+  }
+  
+  .card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+  }
+  
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .logo-icon {
+    font-size: 2.5rem;
+  }
+  
+  h1 {
+    font-size: 2rem;
+    color: green;
+  }
+  
+  .order-status {
+    font-size: 1rem;
+  }
+  
+  .status-label {
+    font-weight: 600;
+  }
+  
+  .status-value {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    background-color: var(--warning-color);
+    color: white;
+    font-weight: 600;
+  }
+  
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: white;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .info-item i {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+  }
+  
+  .order-items ul {
+    list-style-type: none;
+  }
+  
+  .order-items li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 10px;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .order-summary {
+    margin-top: 1.5rem;
+    background-color: white;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+  }
+  
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+  
+  .summary-item.total {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    border-top: 2px solid #f0f0f0;
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  
+  /* Button Styles with Enhanced Gradients and Hover Effects */
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex: 1;
+    color: #fff;
+    background: #ccc;
+  }
+  
+  .btn-primary {
+    background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+  }
+  
+  .btn-success {
+    background: linear-gradient(45deg, var(--success-color), var(--success-dark));
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  
+  .btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+  }
+  
+  .btn-danger {
+    background: linear-gradient(45deg, var(--danger-color), var(--danger-dark));
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  
+  .btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+  }
+  
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  /* Delivery Actions Section */
+  .delivery-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 600px) {
+    .container {
+      padding: 1rem;
+      margin: 1rem;
+    }
+    header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .delivery-actions {
+      flex-direction: column;
+    }
+    .btn {
+      width: 100%;
+    }
+  }
+  
+  /* Phone Actions with Updated Button Styles */
+  .phone-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .phone-actions {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+  }
+  
+  .phone-actions .btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+    text-decoration: none;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .btn-call {
+    background: linear-gradient(45deg, var(--success-color), var(--success-dark));
+    color: white;
+  }
+  
+  .btn-call:hover {
+    background: linear-gradient(45deg, var(--success-dark), var(--success-color));
+  }
+  
+  .btn-text {
+    background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+    color: white;
+  }
+  
+  .btn-text:hover {
+    background: linear-gradient(45deg, var(--primary-dark), var(--primary-color));
+  }
+  
+/* Ensure the card’s delivery actions section uses flex layout for buttons */
+.delivery-actions .card-body .button-row {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  /* Make each button container take equal space */
+  .delivery-actions .card-body .button-col {
+    flex: 1;
+  }
+  
+  /* Ensure buttons take full width of their container */
+  .btn-block {
+    width: 100%;
+    padding: 10px;
+    font-size: 18px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+  }
+  
+  /* Success Button Styling */
+  .btn-success {
+    background: linear-gradient(45deg, var(--success-color), var(--success-dark));
+    color: #fff;
+  }
+  
+  /* Decline Button Styling */
+  .btn-danger {
+    background: linear-gradient(45deg, var(--danger-color), var(--danger-dark));
+    color: #fff;
+  }
+  
+  /* Optional: Add hover effects if not already defined */
+  .btn-success:hover,
+  .btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+  }
+  
+
+
+
+
+  /* Tracking Steps Styles */
+  .tracking-container {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Space between steps */
+  }
+  
+  .tracking-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .tracking-step img {
+    width: 50px;  /* Set uniform small size */
+    height: 50px;
+    object-fit: contain;
+    background: none; /* Remove unwanted background */
+    border: none; /* Remove any border */
+    padding: 5px; /* Add space to avoid overlapping */
+  }
+  
+  .tracking-step .step-text {
+    margin-top: 5px;
+    font-size: 14px;
+  }
+/* Customer Review Card Styles */
+.customer-review {
+  text-align: center;
+  padding: 1.5rem;
+  max-width: auto;
+  margin: 1.5rem auto;
+  border-radius: 15px;
+  background: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.review-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stars {
+  font-size: 2rem;
+  color: #ccc;
+  margin-bottom: 0.5rem;
+}
+
+.star {
+  cursor: pointer; /* Remove pointer if not interactive */
+  margin: 0 0.1rem;
+  transition: color 0.3s;
+}
+
+.star.filled {
+  color: gold;
+}
+
+#reviewText {
+  font-size: 1rem;
+  color: #555;
+  margin: 0;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  max-width: 250px;
+  overflow: hidden;
+}

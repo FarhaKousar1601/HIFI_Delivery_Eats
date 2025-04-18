@@ -1,0 +1,37 @@
+{% extends "index.html" %} {% block title %}About Us Page{% endblock title %} 
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+{% endblock styles %}
+
+{% block content %}
+<section id="about-us" class="about-us section-padding">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="section-title text-center">
+                    <h2>About Us</h2>
+                    <p>We are a team of experienced food delivery service providers who strive to deliver the best food in the city.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="about-image">
+                    <img src="img/about_us_1.jpg" alt="Team Member 1">
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="about-image">
+                    <img src="img/about_us_2.jpg" alt="Team Member 2">
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="about-image">
+                    <img src="img/about_us_3.jpg" alt="Team Member 3">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

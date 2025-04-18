@@ -1,0 +1,154 @@
+{% extends 'admin/index.html' %}
+{% block css %}
+  {{ super() }}
+  <!-- Link to the home-specific CSS file -->
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/admin/delivery_partner.css') }}"
+  />
+{% endblock css %}
+{% block content %}
+<!-- Custom Confirmation Modal -->
+<div id="confirmationModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <p id="modalMessage"></p>
+    <div class="modal-actions">
+      <button id="confirmBtn" class="confirm-btn">Confirm</button>
+      <button id="cancelBtn" class="cancel-btn">Cancel</button>
+    </div>
+  </div>
+</div>
+<h2>Delivery Partners</h2>
+
+<div class="table-container">
+  <h3>Pending Partners</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>ID</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Delivery Area</th>
+        <th>ID Proof</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="userList">
+      {% for agent in pending_agents %}
+      <tr id="user-{{ agent.delivery_agent_id }}">
+        <td>{{ agent.username }}</td>
+        <td>{{ agent.delivery_agent_id }}</td>
+        <td>{{ agent.email }}</td>
+        <td>{{ agent.phone }}</td>
+        <td>{{ agent.delivery_area }}</td>
+        <td>{{ agent.id_proof }}</td>
+        <td>
+          <button class="accept" onclick="handleAccept('{{ agent.delivery_agent_id }}')">
+            Accept
+          </button>
+          <button class="reject" onclick="handleReject('{{ agent.delivery_agent_id }}')">
+            Reject
+          </button>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="7">No pending agents.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="table-container">
+  <h3>All Delivery Partners</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>ID</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Delivery Area</th>
+        <th>ID Proof</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="acceptedAgentsList">
+      {% for agent in accepted_agents %}
+      <tr id="user-{{ agent.delivery_agent_id }}">
+        <td style="color: {% if not agent.is_active %}red{% else %}green{% endif %};">
+          {{ agent.username }}
+        </td>
+        <td>{{ agent.delivery_agent_id }}</td>
+        <td>{{ agent.email }}</td>
+        <td>{{ agent.phone }}</td>
+        <td>{{ agent.delivery_area }}</td>
+        <td>{{ agent.id_proof }}</td>
+        <td>
+          <!-- Toggle switch for active status -->
+          <label class="switch">
+            <input
+              type="checkbox"
+              onchange="confirmToggleAgent('{{ agent.delivery_agent_id }}', this)"
+              {{ 'checked' if agent.is_active else '' }}
+            />
+            <span class="slider"></span>
+          </label>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="7">No accepted agents.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock content %}
+{% block scripts %}
+  {{ super() }}
+  <!-- Link to your admin-specific JavaScript file -->
+  <script src="{{ url_for('static', filename='js/admin/delivery_partner.js') }}"></script>
+  <script>
+    function confirmToggleAgent(agentId, checkbox) {
+      // Prevent multiple confirmations if modal is already open.
+      const modal = document.getElementById("confirmationModal");
+      if (modal.style.display === "block") return;
+      
+      // Determine intended new state.
+      const newState = checkbox.checked;
+      // Save the current state (the opposite) for reverting if needed.
+      const originalState = !newState;
+      
+      // Set modal message.
+      document.getElementById("modalMessage").innerText =
+        `Are you sure you want to ${newState ? "activate" : "deactivate"} this delivery partner?`;
+      modal.style.display = "block";
+      
+      // Attach event listeners with once:true so they fire only once.
+      document.getElementById("confirmBtn").addEventListener('click', function confirmHandler() {
+        if (newState) {
+          handleActivate(agentId).then(success => {
+            if (!success) {
+              checkbox.checked = originalState; // Revert if update fails.
+            }
+          });
+        } else {
+          handleDeactivate(agentId).then(success => {
+            if (!success) {
+              checkbox.checked = originalState; // Revert if update fails.
+            }
+          });
+        }
+        modal.style.display = "none";
+      }, { once: true });
+      
+      document.getElementById("cancelBtn").addEventListener('click', function cancelHandler() {
+        checkbox.checked = originalState; // Revert to original state.
+        modal.style.display = "none";
+      }, { once: true });
+    }
+  </script>
+{% endblock scripts %}

@@ -1,0 +1,96 @@
+{% extends 'admin/base_admin2.html' %}
+
+{% block title %}Menu Management{% endblock title %}
+
+{% block css %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin/menu.css') }}" />
+{% endblock css %}
+
+
+{% block navbar %} {{ super() }} {% endblock navbar %}
+{% block content %}
+<div class="menu-content">
+    <h2>Add New Menu Item</h2>
+    <form id="menu-form">
+        <label>Item Name:</label>
+        <input type="text" id="item-name" name="item-name" required /><br /><br />
+
+        <label>Description:</label>
+        <textarea id="description" name="description" required></textarea><br /><br />
+
+        <label>Price:</label>
+        <input type="number" id="price" name="price" step="0.01" required /><br /><br />
+
+        <label>Category:</label>
+        <select id="category" name="category" required>
+            <option value="">CATEGORY</option>
+            <option value="Veg">VEG</option>
+            <option value="Non-Veg">NON-VEG</option>
+        </select><br /><br />
+
+        <label>Subcategory:</label>
+        <select id="subcategory" name="subcategory" required>
+            <option value="">SUB-CATEGORY</option>
+            <option value="Starter">Starter</option>
+            <option value="Soup">Soups</option>
+            <option value="Salad">Salads</option>
+            <option value="Bread">Breads</option>
+            <option value="Main Course">Main Course</option>
+            <option value="Beverage">Beverages</option>
+            <option value="Breakfast">Breakfast</option>
+            <option value="Biryani">Biryani</option>
+            <option value="Icecream">Icecreams</option>
+        </select><br /><br />
+
+        <label>Discount (%):</label>
+        <input type="number" id="discount" name="discount" min="0" max="100" /><br /><br />
+
+        <label>Upload Image:</label>
+        <input type="file" id="image" name="image" accept="image/*" required /><br /><br />
+
+        <label>Best Seller:</label>
+        <input type="radio" name="best_seller" value="yes" /> Yes
+        <input type="radio" name="best_seller" value="no" checked /> No
+        <br /><br />
+
+        <label>Stock Available:</label>
+        <input type="number" id="stock-available" name="stock-available" min="0" required /><br /><br />
+
+        <label>Schedule Update (optional, IST):</label>
+        <input type="datetime-local" id="schedule-time" name="schedule-time"><br /><br />
+
+        <button type="submit">Add Item</button>
+    </form>
+
+    <hr />
+    <h2>Menu Items</h2>
+    <table id="menu-table-body-table">
+        <thead>
+            <tr>
+                <th>Item ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Category</th>
+                <th>Subcategory</th>
+                <th>Discount</th>
+                <th>Image</th>
+                <th>Best Seller</th>
+                <th>Stock Available</th>
+                <th>Scheduled Update</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="menu-table-body">
+            <!-- Rows will be added dynamically here -->
+        </tbody>
+    </table>
+</div>
+{% endblock content %}
+
+{% block footer %} {% endblock footer %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin/menu.js') }}" defer></script>
+{% endblock scripts %}

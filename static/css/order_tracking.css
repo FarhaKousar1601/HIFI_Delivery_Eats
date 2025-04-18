@@ -1,0 +1,130 @@
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa;
+    text-align: center;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+
+.tracking-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 900px;
+    width: 100%;
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    flex-wrap: wrap;
+}
+
+.tracking-step {
+    text-align: center;
+    width: 22%;
+    position: relative;
+}
+
+.tracking-step img {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 10px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.tracking-step.active img {
+    transform: scale(1.2);
+    filter: drop-shadow(0px 0px 5px #ff5722);
+}
+
+.step-line {
+    position: absolute;
+    top: 30px;
+    left: 12.5%;
+    width: 75%;
+    height: 5px;
+    background: #ddd;
+    z-index: -1;
+    transition: background 0.5s ease-in-out;
+}
+
+.step-text {
+    font-size: 14px;
+    color: #555;
+    font-weight: 400;
+    transition: color 0.3s ease-in-out;
+}
+
+
+.active .step-text {
+    font-weight: bold;
+    color: #ff5722;
+}
+
+.active .step-line {
+    background: #ff5722;
+}
+
+
+.progress-bar {
+    width: 80%;
+    height: 8px;
+    background: #ddd;
+    border-radius: 5px;
+    margin: 20px 0;
+    position: relative;
+    max-width: 600px;
+}
+
+.progress {
+    height: 100%;
+    width: 0%;
+    background: #ff5722;
+    border-radius: 5px;
+    transition: width 1s ease-in-out;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .tracking-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .tracking-step {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    .step-line {
+        display: none;
+    }
+}
+
+
+button {
+    padding: 12px 20px;
+    background: #ff5722;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    margin-top: 10px;
+    transition: 0.3s ease-in-out;
+}
+
+button:hover {
+    background: #e64a19;
+}
